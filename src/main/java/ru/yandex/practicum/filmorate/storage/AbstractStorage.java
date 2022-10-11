@@ -1,5 +1,7 @@
 package ru.yandex.practicum.filmorate.storage;
 
+import ru.yandex.practicum.filmorate.exceptions.UnknownItem;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -20,10 +22,10 @@ public abstract class AbstractStorage<StoredT> {
         return created;
     }
 
-    public StoredT update(StoredT patched) {
+    public StoredT update(StoredT patched) throws UnknownItem {
         int id = getId(patched);
         if (!storage.containsKey(id)) {
-            //throw
+            onUnknown(id);
         }
         storage.put(id, patched);
         return patched;
@@ -31,4 +33,5 @@ public abstract class AbstractStorage<StoredT> {
 
     protected abstract int getId(StoredT stored);
     protected abstract StoredT create(int id, StoredT archetype);
+    protected abstract void onUnknown(int id) throws UnknownItem;
 }

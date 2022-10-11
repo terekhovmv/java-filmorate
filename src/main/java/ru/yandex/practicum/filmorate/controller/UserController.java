@@ -2,9 +2,11 @@ package ru.yandex.practicum.filmorate.controller;
 
 import org.springframework.web.bind.annotation.*;
 
+import ru.yandex.practicum.filmorate.exceptions.UnknownItem;
 import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.storage.UserStorage;
 
+import javax.validation.Valid;
 import java.util.List;
 
 @RestController
@@ -20,13 +22,13 @@ public class UserController {
 
     @PostMapping
     @ResponseBody
-    public User create(@RequestBody User archetype) {
+    public User create(@RequestBody @Valid User archetype) {
         return storage.create(archetype);
     }
 
     @PutMapping
     @ResponseBody
-    public User update(@RequestBody User patched) {
+    public User update(@RequestBody @Valid User patched) throws UnknownItem {
         return storage.update(patched);
     }
 }
