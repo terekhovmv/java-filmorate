@@ -10,9 +10,9 @@ import java.lang.annotation.*;
 @Constraint(validatedBy = MovieEraValidator.class)
 public @interface MovieEra {
     //error message
-    public String message() default "Invalid date: must be after 1895-12-28";
+    String message() default "Invalid date: must be after 1895-12-28";
     //represents group of constraints
-    public Class<?>[] groups() default {};
+    Class<?>[] groups() default {};
     //represents additional information about annotation
-    public Class<? extends Payload>[] payload() default {};
+    Class<? extends Payload>[] payload() default {};
 }

@@ -22,4 +22,14 @@ public class FilmStorage extends AbstractStorage<Film> {
         log.warn(message);
         throw new UnknownItem(message);
     }
+
+    @Override
+    protected void onAfterCreate(Film created) {
+        log.info("Film {} was successfully added with id {}", created.getName(), created.getId());
+    }
+
+    @Override
+    protected void onAfterUpdate(Film updated) {
+        log.info("Film {} was successfully updated", updated.getId());
+    }
 }
