@@ -5,6 +5,8 @@ import lombok.extern.slf4j.Slf4j;
 import ru.yandex.practicum.filmorate.exceptions.UnknownItem;
 import ru.yandex.practicum.filmorate.model.User;
 
+import java.util.Optional;
+
 @Slf4j
 public class UserStorage extends AbstractStorage<User> {
     @Override
@@ -13,23 +15,28 @@ public class UserStorage extends AbstractStorage<User> {
     }
 
     @Override
-    protected User create(int id, User archetype) {
-        User created = archetype.toBuilder().id(id).build();
-        makeValid(created);
-        return created;
+    protected User build(int id, User archetype) {
+        User.UserBuilder builder = archetype.toBuilder().id(id);
+        Optional<String> nameToSet = getNameToSet(archetype);
+        nameToSet.ifPresent(builder::name);
+        return builder.build();
     }
 
     @Override
-    protected User update(User prev, User from) {
-        makeValid(from);
-        return from;
+    protected User buildForUpdate(User from) {
+        Optional<String> nameToSet = getNameToSet(from);
+        if (nameToSet.isEmpty()) {
+            return from;
+        }
+        return from.toBuilder().name(nameToSet.get()).build();
     }
 
-    void makeValid(User value) {
-        String name = value.getName();
-        if (name == null || name.isBlank()) {
-            value.setName(value.getLogin());
+    private Optional<String> getNameToSet(User user) {
+        String value = user.getName();
+        if (value == null || value.isBlank()) {
+            return Optional.of(user.getLogin());
         }
+        return Optional.empty();
     }
 
     @Override
@@ -40,12 +47,12 @@ public class UserStorage extends AbstractStorage<User> {
     }
 
     @Override
-    protected void onAfterCreate(User created) {
-        log.info("User {} was successfully added with id {}", created.getLogin(), created.getId());
+    protected void onAfterCreate(User item) {
+        log.info("User {} was successfully added with id {}", item.getLogin(), item.getId());
     }
 
     @Override
-    protected void onAfterUpdate(User updated) {
-        log.info("User {} was successfully updated", updated.getLogin());
+    protected void onAfterUpdate(User item) {
+        log.info("User {} was successfully updated", item.getLogin());
     }
 }

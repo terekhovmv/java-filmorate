@@ -12,8 +12,13 @@ public class FilmStorage extends AbstractStorage<Film> {
     }
 
     @Override
-    protected Film create(int id, Film archetype) {
+    protected Film build(int id, Film archetype) {
         return archetype.toBuilder().id(id).build();
+    }
+
+    @Override
+    protected Film buildForUpdate(Film from) {
+        return from;
     }
 
     @Override
@@ -24,12 +29,12 @@ public class FilmStorage extends AbstractStorage<Film> {
     }
 
     @Override
-    protected void onAfterCreate(Film created) {
-        log.info("Film {} was successfully added with id {}", created.getName(), created.getId());
+    protected void onAfterCreate(Film item) {
+        log.info("Film {} was successfully added with id {}", item.getName(), item.getId());
     }
 
     @Override
-    protected void onAfterUpdate(Film updated) {
-        log.info("Film {} was successfully updated", updated.getId());
+    protected void onAfterUpdate(Film item) {
+        log.info("Film {} was successfully updated", item.getId());
     }
 }

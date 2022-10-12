@@ -1,7 +1,7 @@
 package ru.yandex.practicum.filmorate.model;
 
 import lombok.Builder;
-import lombok.Data;
+import lombok.Value;
 
 import ru.yandex.practicum.filmorate.annotations.MovieEra;
 
@@ -10,7 +10,7 @@ import javax.validation.constraints.Positive;
 import javax.validation.constraints.Size;
 import java.time.LocalDate;
 
-@Data
+@Value
 @Builder(toBuilder = true)
 public class Film {
     private int id;

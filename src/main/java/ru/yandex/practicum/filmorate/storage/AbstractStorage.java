@@ -17,12 +17,12 @@ public abstract class AbstractStorage<StoredT> {
 
     public StoredT create(StoredT archetype) {
         lastId++;
-        StoredT created = create(lastId, archetype);
+        StoredT item = build(lastId, archetype);
 
-        storage.put(lastId, created);
-        onAfterCreate(created);
+        storage.put(lastId, item);
+        onAfterCreate(item);
 
-        return created;
+        return item;
     }
 
     public StoredT update(StoredT from) throws UnknownItem {
@@ -31,19 +31,18 @@ public abstract class AbstractStorage<StoredT> {
             onUnknown(id);
         }
 
-        StoredT updated = update(storage.get(id), from);
-        storage.put(id, updated);
-        onAfterUpdate(updated);
+        StoredT item = buildForUpdate(from);
+        storage.put(id, item);
+        onAfterUpdate(item);
 
-        return from;
+        return item;
     }
 
     protected abstract int getId(StoredT stored);
-    protected abstract StoredT create(int id, StoredT archetype);
-    protected StoredT update(StoredT prev, StoredT from) {
-        return from;
-    }
+    protected abstract StoredT build(int id, StoredT archetype);
+    protected abstract StoredT buildForUpdate(StoredT from);
     protected abstract void onUnknown(int id) throws UnknownItem;
-    protected abstract void onAfterCreate(StoredT created);
-    protected abstract void onAfterUpdate(StoredT updated);
+    protected abstract void onAfterCreate(StoredT item);
+    protected abstract void onAfterUpdate(StoredT item);
+
 }
