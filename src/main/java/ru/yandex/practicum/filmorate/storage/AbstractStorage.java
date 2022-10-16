@@ -7,17 +7,17 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public abstract class AbstractStorage<StoredT> {
-    private final Map<Integer, StoredT> storage = new HashMap<>();
+public abstract class AbstractStorage<ItemT> {
+    private final Map<Integer, ItemT> storage = new HashMap<>();
     private int lastId = 0;
 
-    public List<StoredT> findAll() {
+    public List<ItemT> findAll() {
         return new ArrayList<>(storage.values());
     }
 
-    public StoredT create(StoredT archetype) {
+    public ItemT create(ItemT archetype) {
         lastId++;
-        StoredT item = build(lastId, archetype);
+        ItemT item = build(lastId, archetype);
 
         storage.put(lastId, item);
         onAfterCreate(item);
@@ -25,24 +25,24 @@ public abstract class AbstractStorage<StoredT> {
         return item;
     }
 
-    public StoredT update(StoredT from) throws UnknownItem {
+    public ItemT update(ItemT from) throws UnknownItem {
         int id = getId(from);
         if (!storage.containsKey(id)) {
             onUnknown(id);
         }
 
-        StoredT item = buildForUpdate(from);
+        ItemT item = buildForUpdate(from);
         storage.put(id, item);
         onAfterUpdate(item);
 
         return item;
     }
 
-    protected abstract int getId(StoredT stored);
-    protected abstract StoredT build(int id, StoredT archetype);
-    protected abstract StoredT buildForUpdate(StoredT from);
+    protected abstract int getId(ItemT stored);
+    protected abstract ItemT build(int id, ItemT archetype);
+    protected abstract ItemT buildForUpdate(ItemT from);
     protected abstract void onUnknown(int id) throws UnknownItem;
-    protected abstract void onAfterCreate(StoredT item);
-    protected abstract void onAfterUpdate(StoredT item);
+    protected abstract void onAfterCreate(ItemT item);
+    protected abstract void onAfterUpdate(ItemT item);
 
 }
