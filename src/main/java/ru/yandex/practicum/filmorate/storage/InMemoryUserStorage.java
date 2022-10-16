@@ -8,7 +8,7 @@ import ru.yandex.practicum.filmorate.model.User;
 import java.util.Optional;
 
 @Slf4j
-public class UserStorage extends AbstractStorage<User> {
+public class InMemoryUserStorage extends AbstractStorage<User> {
     @Override
     protected int getId(User stored) {
         return stored.getId();
