@@ -11,8 +11,8 @@ import java.util.*;
 @Slf4j
 @Component
 public class InMemoryUserStorage implements UserStorage {
-    private final Map<Integer, User> storage = new HashMap<>();
-    private int lastId = 0;
+    private final Map<Long, User> storage = new HashMap<>();
+    private long lastId = 0;
 
     public List<User> findAll() {
         return new ArrayList<>(storage.values());
@@ -29,7 +29,7 @@ public class InMemoryUserStorage implements UserStorage {
     }
 
     public User update(User from) {
-        int id = from.getId();
+        long id = from.getId();
         if (!storage.containsKey(id)) {
             onUnknown(id);
         }
@@ -41,7 +41,7 @@ public class InMemoryUserStorage implements UserStorage {
         return item;
     }
 
-    public void delete(int id) {
+    public void delete(long id) {
         if (!storage.containsKey(id)) {
             onUnknown(id);
         }
@@ -51,7 +51,7 @@ public class InMemoryUserStorage implements UserStorage {
         log.info("User {} was successfully deleted", item.getLogin());
     }
 
-    private User build(int id, User archetype) {
+    private User build(long id, User archetype) {
         User.UserBuilder builder = archetype.toBuilder().id(id);
         Optional<String> nameToSet = getNameToSet(archetype);
         nameToSet.ifPresent(builder::name);
@@ -74,7 +74,7 @@ public class InMemoryUserStorage implements UserStorage {
         return Optional.empty();
     }
 
-    private void onUnknown(int id) {
+    private void onUnknown(long id) {
         String message = String.format("Unknown user %d requested", id);
         log.warn(message);
         throw new UnknownItem(message);

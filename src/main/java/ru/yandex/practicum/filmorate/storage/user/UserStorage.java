@@ -8,5 +8,5 @@ public interface UserStorage {
     List<User> findAll();
     User create(User archetype);
     User update(User from);
-    void delete(int id);
+    void delete(long id);
 }
