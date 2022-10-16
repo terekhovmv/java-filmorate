@@ -1,4 +1,4 @@
-package ru.yandex.practicum.filmorate.storage;
+package ru.yandex.practicum.filmorate.storage.inmemory;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -8,7 +8,7 @@ import ru.yandex.practicum.filmorate.model.User;
 import java.util.Optional;
 
 @Slf4j
-public class InMemoryUserStorage extends AbstractStorage<User> {
+public class InMemoryUserStorage extends AbstractInMemoryStorage<User> {
     @Override
     protected int getId(User stored) {
         return stored.getId();
@@ -40,7 +40,7 @@ public class InMemoryUserStorage extends AbstractStorage<User> {
     }
 
     @Override
-    protected void onUnknown(int id) throws UnknownItem {
+    protected void onUnknown(int id) {
         String message = String.format("Unknown user %d requested", id);
         log.warn(message);
         throw new UnknownItem(message);
@@ -54,5 +54,10 @@ public class InMemoryUserStorage extends AbstractStorage<User> {
     @Override
     protected void onAfterUpdate(User item) {
         log.info("User {} was successfully updated", item.getLogin());
+    }
+
+    @Override
+    protected void onAfterDelete(User item) {
+        log.info("User {} was successfully deleted", item.getLogin());
     }
 }

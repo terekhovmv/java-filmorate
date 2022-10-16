@@ -4,7 +4,7 @@ import org.springframework.web.bind.annotation.*;
 
 import ru.yandex.practicum.filmorate.exceptions.UnknownItem;
 import ru.yandex.practicum.filmorate.model.User;
-import ru.yandex.practicum.filmorate.storage.InMemoryUserStorage;
+import ru.yandex.practicum.filmorate.storage.inmemory.InMemoryUserStorage;
 
 import javax.validation.Valid;
 import java.util.List;

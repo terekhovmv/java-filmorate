@@ -1,11 +1,12 @@
-package ru.yandex.practicum.filmorate.storage;
+package ru.yandex.practicum.filmorate.storage.inmemory;
 
 import lombok.extern.slf4j.Slf4j;
 import ru.yandex.practicum.filmorate.exceptions.UnknownItem;
 import ru.yandex.practicum.filmorate.model.Film;
+import ru.yandex.practicum.filmorate.model.User;
 
 @Slf4j
-public class InMemoryFilmStorage extends AbstractStorage<Film> {
+public class InMemoryFilmStorage extends AbstractInMemoryStorage<Film> {
     @Override
     protected int getId(Film stored) {
         return stored.getId();
@@ -22,7 +23,7 @@ public class InMemoryFilmStorage extends AbstractStorage<Film> {
     }
 
     @Override
-    protected void onUnknown(int id) throws UnknownItem {
+    protected void onUnknown(int id) {
         String message = String.format("Unknown film %d requested", id);
         log.warn(message);
         throw new UnknownItem(message);
@@ -36,5 +37,10 @@ public class InMemoryFilmStorage extends AbstractStorage<Film> {
     @Override
     protected void onAfterUpdate(Film item) {
         log.info("Film {} was successfully updated", item.getId());
+    }
+
+    @Override
+    protected void onAfterDelete(Film item) {
+        log.info("Film {} was successfully deleted", item.getId());
     }
 }
