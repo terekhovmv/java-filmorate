@@ -12,7 +12,11 @@ import java.util.List;
 @RestController
 @RequestMapping("/films")
 public class FilmController {
-    private final InMemoryFilmStorage storage = new InMemoryFilmStorage();
+    private final InMemoryFilmStorage storage;
+
+    public FilmController(InMemoryFilmStorage storage) {
+        this.storage = storage;
+    }
 
     @GetMapping
     @ResponseBody
@@ -28,7 +32,7 @@ public class FilmController {
 
     @PutMapping
     @ResponseBody
-    public Film update(@RequestBody @Valid Film patched) throws UnknownItem {
+    public Film update(@RequestBody @Valid Film patched) {
         return storage.update(patched);
     }
 }
