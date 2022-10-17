@@ -3,7 +3,7 @@ package ru.yandex.practicum.filmorate.controller;
 import org.springframework.web.bind.annotation.*;
 
 import ru.yandex.practicum.filmorate.model.User;
-import ru.yandex.practicum.filmorate.storage.user.UserStorage;
+import ru.yandex.practicum.filmorate.service.UserService;
 
 import javax.validation.Valid;
 import java.util.List;
@@ -11,27 +11,27 @@ import java.util.List;
 @RestController
 @RequestMapping("/users")
 public class UserController {
-    private final UserStorage storage;
+    private final UserService service;
 
-    public UserController(UserStorage storage) {
-        this.storage = storage;
+    public UserController(UserService service) {
+        this.service = service;
     }
 
     @GetMapping
     @ResponseBody
     public List<User> findAll() {
-        return storage.findAll();
+        return service.findAll();
     }
 
     @PostMapping
     @ResponseBody
     public User create(@RequestBody @Valid User archetype) {
-        return storage.create(archetype);
+        return service.create(archetype);
     }
 
     @PutMapping
     @ResponseBody
     public User update(@RequestBody @Valid User patched) {
-        return storage.update(patched);
+        return service.update(patched);
     }
 }
