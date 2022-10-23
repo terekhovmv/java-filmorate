@@ -5,8 +5,10 @@ import ru.yandex.practicum.filmorate.model.Film;
 import java.util.List;
 
 public interface FilmStorage {
-    List<Film> findAll();
+    boolean contains(int id);
+    Film getById(int id);
+    List<Film> getAll();
     Film create(Film archetype);
     Film update(Film from);
-    void delete(int id);
+    Film delete(int id);
 }
