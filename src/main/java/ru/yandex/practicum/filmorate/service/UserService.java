@@ -2,10 +2,12 @@ package ru.yandex.practicum.filmorate.service;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import ru.yandex.practicum.filmorate.exceptions.UnknownItem;
 import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.storage.friends.FriendsStorage;
 import ru.yandex.practicum.filmorate.storage.user.UserStorage;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Slf4j
@@ -47,6 +49,45 @@ public class UserService {
         log.info("User {} (login='{}') was successfully deleted", item.getId(), item.getLogin());
     }
 
+    public void addToUserFriends(long id, long friendId) {
+        checkIsKnownUser(id);
+        checkIsKnownUser(friendId);
+
+        friendsStorage.addToUserFriends(id, friendId);
+        log.info("User {} was successfully set as friend for {}", friendId, id);
+    }
+
+    public void deleteFromUserFriends(long id, long friendId) {
+        checkIsKnownUser(id);
+        checkIsKnownUser(friendId);
+
+        friendsStorage.deleteFromUserFriends(id, friendId);
+        log.info("User {} was successfully unfriended for {}", friendId, id);
+    }
+
+    public List<User> getUserFriends(long id) {
+        checkIsKnownUser(id);
+
+        List<Long> friendIds = friendsStorage.getUserFriends(id);
+        return getByIds(friendIds);
+    }
+
+    public List<User> getCommonUserFriends(long id, long otherId) {
+        checkIsKnownUser(id);
+        checkIsKnownUser(otherId);
+
+        List<Long> friendIds = friendsStorage.getUserFriends(id);
+        List<Long> otherFriendIds = friendsStorage.getUserFriends(otherId);
+
+        List<Long> commonIds = new ArrayList<>();
+        for(Long friendId: friendIds) {
+            if (otherFriendIds.contains(friendId)) {
+                commonIds.add(friendId);
+            }
+        }
+        return getByIds(commonIds);
+    }
+
     private User correctUserIfNeeded(User item) {
         String name = item.getName();
         if (name != null && !name.isBlank()) {
@@ -54,5 +95,22 @@ public class UserService {
         }
 
         return item.toBuilder().name(item.getLogin()).build();
+    }
+
+    private List<User> getByIds(List<Long> ids) {
+        List<User> result = new ArrayList<>();
+        for(Long id: ids) {
+            if (userStorage.contains(id)) {
+                result.add(userStorage.getById(id));
+            }
+        }
+
+        return result;
+    }
+
+    private void checkIsKnownUser(long id) {
+        if (!userStorage.contains(id)) {
+            throw new UnknownItem(""); //TODO
+        }
     }
 }
