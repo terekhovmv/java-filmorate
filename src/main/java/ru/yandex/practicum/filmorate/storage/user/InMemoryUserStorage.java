@@ -7,6 +7,7 @@ import ru.yandex.practicum.filmorate.exceptions.UnknownItem;
 import ru.yandex.practicum.filmorate.model.User;
 
 import java.util.*;
+import java.util.stream.Stream;
 
 @Slf4j
 @Component
@@ -27,8 +28,8 @@ public class InMemoryUserStorage implements UserStorage {
     }
 
     @Override
-    public List<User> getAll() {
-        return new ArrayList<>(storage.values());
+    public Stream<User> stream() {
+        return storage.values().stream();
     }
 
     @Override

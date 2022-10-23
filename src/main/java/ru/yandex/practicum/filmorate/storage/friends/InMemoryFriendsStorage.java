@@ -9,15 +9,19 @@ public class InMemoryFriendsStorage implements FriendsStorage {
     private final Map<Long, Set<Long>> storage = new HashMap<>();
 
     @Override
-    public void addToUserFriends(long userId, long friendId) {
-        add(userId, friendId);
-        add(friendId, userId);
+    public boolean addToUserFriends(long userId, long friendId) {
+        boolean result = add(userId, friendId);
+        boolean symmetricResult = add(friendId, userId);
+        assert result == symmetricResult;
+        return result;
     }
 
     @Override
-    public void deleteFromUserFriends(long userId, long friendId) {
-        delete(userId, friendId);
-        delete(friendId, userId);
+    public boolean deleteFromUserFriends(long userId, long friendId) {
+        boolean result = delete(userId, friendId);
+        boolean symmetricResult = delete(friendId, userId);
+        assert result == symmetricResult;
+        return result;
     }
 
     @Override
@@ -29,16 +33,16 @@ public class InMemoryFriendsStorage implements FriendsStorage {
         return new ArrayList<>(friends);
     }
 
-    private void add(long userId, long friendId) {
+    private boolean add(long userId, long friendId) {
         storage.putIfAbsent(userId, new HashSet<>());
-        storage.get(userId).add(friendId);
+        return storage.get(userId).add(friendId);
     }
 
-    private void delete(long userId, long friendId) {
+    private boolean delete(long userId, long friendId) {
         Set<Long> friends = storage.get(userId);
         if (friends == null) {
-            return;
+            return false;
         }
-        friends.remove(friendId);
+        return friends.remove(friendId);
     }
 }

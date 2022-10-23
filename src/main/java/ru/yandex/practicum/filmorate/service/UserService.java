@@ -9,6 +9,7 @@ import ru.yandex.practicum.filmorate.storage.user.UserStorage;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -29,7 +30,7 @@ public class UserService {
     }
 
     public List<User> getAll() {
-        return userStorage.getAll();
+        return userStorage.stream().collect(Collectors.toList());
     }
 
     public User create(User archetype) {
@@ -48,16 +49,22 @@ public class UserService {
         checkIsKnownUser(id);
         checkIsKnownUser(friendId);
 
-        friendsStorage.addToUserFriends(id, friendId);
-        log.info("User {} was successfully set as friend for {}", friendId, id);
+        if (friendsStorage.addToUserFriends(id, friendId)) {
+            log.info("User {} was successfully set as friend for {}", friendId, id);
+        } else {
+            log.info("User {} is already friend for {}", friendId, id);
+        }
     }
 
     public void deleteFromUserFriends(long id, long friendId) {
         checkIsKnownUser(id);
         checkIsKnownUser(friendId);
 
-        friendsStorage.deleteFromUserFriends(id, friendId);
-        log.info("User {} was successfully unfriended for {}", friendId, id);
+        if (friendsStorage.deleteFromUserFriends(id, friendId)) {
+            log.info("User {} was successfully unfriended for {}", friendId, id);
+        } else {
+            log.info("Unable to unfriend the user {} for {}, since they are not friends", friendId, id);
+        }
     }
 
     public List<User> getUserFriends(long id) {
