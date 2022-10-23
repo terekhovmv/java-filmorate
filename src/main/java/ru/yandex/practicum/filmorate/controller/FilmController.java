@@ -40,10 +40,4 @@ public class FilmController {
     public Film update(@RequestBody @Valid Film patched) {
         return service.update(patched);
     }
-
-    @DeleteMapping("/{id}")
-    @ResponseBody
-    public void delete(@PathVariable int id) {
-        service.delete(id);
-    }
 }

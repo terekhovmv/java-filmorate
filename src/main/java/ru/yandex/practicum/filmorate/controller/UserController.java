@@ -41,12 +41,6 @@ public class UserController {
         return service.update(patched);
     }
 
-    @DeleteMapping("/{id}")
-    @ResponseBody
-    public void delete(@PathVariable long id) {
-        service.delete(id);
-    }
-
     @PutMapping("/{id}/friends/{friendId}")
     @ResponseBody
     public void addToUserFriends(@PathVariable long id, @PathVariable long friendId) {

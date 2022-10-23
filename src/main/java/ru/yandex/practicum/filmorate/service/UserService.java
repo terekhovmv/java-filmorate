@@ -44,11 +44,6 @@ public class UserService {
         return item;
     }
 
-    public void delete(long id) {
-        User item = userStorage.delete(id);
-        log.info("User {} (login='{}') was successfully deleted", item.getId(), item.getLogin());
-    }
-
     public void addToUserFriends(long id, long friendId) {
         checkIsKnownUser(id);
         checkIsKnownUser(friendId);

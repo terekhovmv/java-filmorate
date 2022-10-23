@@ -45,9 +45,4 @@ public class FilmService {
         log.info("Film {} was successfully updated", item.getId());
         return item;
     }
-
-    public void delete(int id) {
-        Film item = filmStorage.delete(id);
-        log.info("Film {} (name='{}') was successfully deleted", item.getId(), item.getName());
-    }
 }

@@ -49,15 +49,6 @@ public class InMemoryUserStorage implements UserStorage {
         return from;
     }
 
-    @Override
-    public User delete(long id) {
-        checkIsKnown(id);
-
-        User item = storage.get(id);
-        storage.remove(id);
-        return item;
-    }
-
     private void checkIsKnown(long id) {
         if (!contains(id)) {
             throw new UnknownItem(""); //TODO

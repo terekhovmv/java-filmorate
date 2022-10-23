@@ -11,5 +11,4 @@ public interface UserStorage {
     List<User> getAll();
     User create(User archetype);
     User update(User from);
-    User delete(long id);
 }

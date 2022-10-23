@@ -10,5 +10,4 @@ public interface FilmStorage {
     List<Film> getAll();
     Film create(Film archetype);
     Film update(Film from);
-    Film delete(int id);
 }

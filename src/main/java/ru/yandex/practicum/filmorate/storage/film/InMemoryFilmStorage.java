@@ -47,15 +47,6 @@ public class InMemoryFilmStorage implements FilmStorage {
         return from;
     }
 
-    @Override
-    public Film delete(int id) {
-        checkIsKnown(id);
-
-        Film item = storage.get(id);
-        storage.remove(id);
-        return item;
-    }
-
     private void checkIsKnown(int id) {
         if (!contains(id)) {
             throw new UnknownItem(""); //TODO
