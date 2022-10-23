@@ -2,7 +2,6 @@ package ru.yandex.practicum.filmorate.storage.film;
 
 import org.springframework.stereotype.Component;
 
-import ru.yandex.practicum.filmorate.exceptions.UnknownItem;
 import ru.yandex.practicum.filmorate.model.Film;
 
 import java.util.*;
@@ -20,7 +19,7 @@ public class InMemoryFilmStorage implements FilmStorage {
 
     @Override
     public Film getById(int id) {
-        checkIsKnown(id);
+        requireContains(id);
 
         return storage.get(id);
     }
@@ -42,15 +41,9 @@ public class InMemoryFilmStorage implements FilmStorage {
     @Override
     public Film update(Film from) {
         int id = from.getId();
-        checkIsKnown(id);
+        requireContains(id);
 
         storage.put(id, from);
         return from;
-    }
-
-    private void checkIsKnown(int id) {
-        if (!contains(id)) {
-            throw new UnknownItem(""); //TODO
-        }
     }
 }

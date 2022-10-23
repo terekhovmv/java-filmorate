@@ -2,7 +2,6 @@ package ru.yandex.practicum.filmorate.service;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
-import ru.yandex.practicum.filmorate.exceptions.UnknownItem;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.storage.film.FilmStorage;
 import ru.yandex.practicum.filmorate.storage.likes.LikesStorage;
@@ -49,8 +48,8 @@ public class FilmService {
     }
 
     public void addFilmLike(int filmId, long userId) {
-        checkIsKnownFilm(filmId);
-        checkIsKnownUser(userId);
+        filmStorage.requireContains(filmId);
+        userStorage.requireContains(userId);
 
         if (likesStorage.addFilmLike(filmId, userId)) {
             log.info("Film {} was successfully liked by user {}", filmId, userId);
@@ -60,8 +59,8 @@ public class FilmService {
     }
 
     public void deleteFilmLike(int filmId, long userId) {
-        checkIsKnownFilm(filmId);
-        checkIsKnownUser(userId);
+        filmStorage.requireContains(filmId);
+        userStorage.requireContains(userId);
 
         if (likesStorage.deleteFilmLike(filmId, userId)) {
             log.info("Film {} was successfully unliked by user {}", filmId, userId);
@@ -76,17 +75,5 @@ public class FilmService {
                 .sorted((a,b) -> Integer.compare(likesStorage.getFilmLikesCount(b.getId()), likesStorage.getFilmLikesCount(a.getId())))
                 .limit(count)
                 .collect(Collectors.toList());
-    }
-
-    private void checkIsKnownFilm(int id) {
-        if (!filmStorage.contains(id)) {
-            throw new UnknownItem(""); //TODO
-        }
-    }
-
-    private void checkIsKnownUser(long id) {
-        if (!userStorage.contains(id)) {
-            throw new UnknownItem(""); //TODO
-        }
     }
 }

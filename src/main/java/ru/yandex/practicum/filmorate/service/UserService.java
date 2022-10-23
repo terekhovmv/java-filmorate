@@ -2,7 +2,6 @@ package ru.yandex.practicum.filmorate.service;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
-import ru.yandex.practicum.filmorate.exceptions.UnknownItem;
 import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.storage.friends.FriendsStorage;
 import ru.yandex.practicum.filmorate.storage.user.UserStorage;
@@ -46,8 +45,8 @@ public class UserService {
     }
 
     public void addToUserFriends(long id, long friendId) {
-        checkIsKnownUser(id);
-        checkIsKnownUser(friendId);
+        userStorage.requireContains(id);
+        userStorage.requireContains(friendId);
 
         if (friendsStorage.addToUserFriends(id, friendId)) {
             log.info("User {} was successfully set as friend for {}", friendId, id);
@@ -57,8 +56,8 @@ public class UserService {
     }
 
     public void deleteFromUserFriends(long id, long friendId) {
-        checkIsKnownUser(id);
-        checkIsKnownUser(friendId);
+        userStorage.requireContains(id);
+        userStorage.requireContains(friendId);
 
         if (friendsStorage.deleteFromUserFriends(id, friendId)) {
             log.info("User {} was successfully unfriended for {}", friendId, id);
@@ -68,15 +67,15 @@ public class UserService {
     }
 
     public List<User> getUserFriends(long id) {
-        checkIsKnownUser(id);
+        userStorage.requireContains(id);
 
         List<Long> friendIds = friendsStorage.getUserFriends(id);
         return getByIds(friendIds);
     }
 
     public List<User> getCommonUserFriends(long id, long otherId) {
-        checkIsKnownUser(id);
-        checkIsKnownUser(otherId);
+        userStorage.requireContains(id);
+        userStorage.requireContains(otherId);
 
         List<Long> friendIds = friendsStorage.getUserFriends(id);
         List<Long> otherFriendIds = friendsStorage.getUserFriends(otherId);
@@ -108,11 +107,5 @@ public class UserService {
         }
 
         return result;
-    }
-
-    private void checkIsKnownUser(long id) {
-        if (!userStorage.contains(id)) {
-            throw new UnknownItem(""); //TODO
-        }
     }
 }
