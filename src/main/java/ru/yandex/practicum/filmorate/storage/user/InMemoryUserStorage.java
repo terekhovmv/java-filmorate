@@ -14,69 +14,53 @@ public class InMemoryUserStorage implements UserStorage {
     private final Map<Long, User> storage = new HashMap<>();
     private long lastId = 0;
 
-    public List<User> findAll() {
+    @Override
+    public boolean contains(long id) {
+        return storage.containsKey(id);
+    }
+
+    @Override
+    public User getById(long id) {
+        checkIsKnown(id);
+
+        return storage.get(id);
+    }
+
+    @Override
+    public List<User> getAll() {
         return new ArrayList<>(storage.values());
     }
 
+    @Override
     public User create(User archetype) {
         lastId++;
-        User item = build(lastId, archetype);
+        User item = archetype.toBuilder().id(lastId).build();
 
         storage.put(lastId, item);
-        log.info("User {} was successfully updated", item.getLogin());
-
         return item;
     }
 
+    @Override
     public User update(User from) {
         long id = from.getId();
-        if (!storage.containsKey(id)) {
-            onUnknown(id);
-        }
+        checkIsKnown(id);
 
-        User item = buildForUpdate(from);
-        storage.put(id, item);
-        log.info("User {} was successfully updated", item.getLogin());
-
-        return item;
+        storage.put(id, from);
+        return from;
     }
 
-    public void delete(long id) {
-        if (!storage.containsKey(id)) {
-            onUnknown(id);
-        }
+    @Override
+    public User delete(long id) {
+        checkIsKnown(id);
 
         User item = storage.get(id);
         storage.remove(id);
-        log.info("User {} was successfully deleted", item.getLogin());
+        return item;
     }
 
-    private User build(long id, User archetype) {
-        User.UserBuilder builder = archetype.toBuilder().id(id);
-        Optional<String> nameToSet = getNameToSet(archetype);
-        nameToSet.ifPresent(builder::name);
-        return builder.build();
-    }
-
-    private User buildForUpdate(User from) {
-        Optional<String> nameToSet = getNameToSet(from);
-        if (nameToSet.isEmpty()) {
-            return from;
+    private void checkIsKnown(long id) {
+        if (!contains(id)) {
+            throw new UnknownItem(""); //TODO
         }
-        return from.toBuilder().name(nameToSet.get()).build();
-    }
-
-    private Optional<String> getNameToSet(User user) {
-        String value = user.getName();
-        if (value == null || value.isBlank()) {
-            return Optional.of(user.getLogin());
-        }
-        return Optional.empty();
-    }
-
-    private void onUnknown(long id) {
-        String message = String.format("Unknown user %d requested", id);
-        log.warn(message);
-        throw new UnknownItem(message);
     }
 }

@@ -17,10 +17,16 @@ public class UserController {
         this.service = service;
     }
 
+    @GetMapping("/{id}")
+    @ResponseBody
+    public User getById(@PathVariable long id) {
+        return service.getById(id);
+    }
+
     @GetMapping
     @ResponseBody
-    public List<User> findAll() {
-        return service.findAll();
+    public List<User> getAll() {
+        return service.getAll();
     }
 
     @PostMapping
@@ -33,5 +39,11 @@ public class UserController {
     @ResponseBody
     public User update(@RequestBody @Valid User patched) {
         return service.update(patched);
+    }
+
+    @DeleteMapping("/{id}")
+    @ResponseBody
+    public void delete(@PathVariable long id) {
+        service.delete(id);
     }
 }
