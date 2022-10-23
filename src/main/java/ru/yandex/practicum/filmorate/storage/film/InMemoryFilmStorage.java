@@ -6,6 +6,7 @@ import ru.yandex.practicum.filmorate.exceptions.UnknownItem;
 import ru.yandex.practicum.filmorate.model.Film;
 
 import java.util.*;
+import java.util.stream.Stream;
 
 @Component
 public class InMemoryFilmStorage implements FilmStorage {
@@ -25,8 +26,8 @@ public class InMemoryFilmStorage implements FilmStorage {
     }
 
     @Override
-    public List<Film> getAll() {
-        return new ArrayList<>(storage.values());
+    public Stream<Film> stream() {
+        return storage.values().stream();
     }
 
     @Override

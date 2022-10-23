@@ -6,6 +6,7 @@ import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.service.FilmService;
 
 import javax.validation.Valid;
+import javax.validation.constraints.Positive;
 import java.util.List;
 
 @RestController
@@ -39,5 +40,23 @@ public class FilmController {
     @ResponseBody
     public Film update(@RequestBody @Valid Film patched) {
         return service.update(patched);
+    }
+
+    @PutMapping("/{id}/like/{userId}")
+    @ResponseBody
+    public void addFilmLike(@PathVariable int id, @PathVariable long userId) {
+        service.addFilmLike(id, userId);
+    }
+
+    @DeleteMapping("/{id}/like/{userId}")
+    @ResponseBody
+    public void deleteFilmLike(@PathVariable int id, @PathVariable long userId) {
+        service.deleteFilmLike(id, userId);
+    }
+
+    @GetMapping("/popular")
+    @ResponseBody
+    public List<Film> getPopular(@RequestParam(name = "count", defaultValue = "10") @Positive int count) {
+        return service.getPopular(count);
     }
 }

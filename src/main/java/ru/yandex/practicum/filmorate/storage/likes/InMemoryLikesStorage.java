@@ -9,18 +9,22 @@ public class InMemoryLikesStorage implements LikesStorage {
     private final Map<Integer, Set<Long>> storage = new HashMap<>();
 
     @Override
-    public void addFilmLike(int filmId, long userId) {
+    public boolean addFilmLike(int filmId, long userId) {
         storage.putIfAbsent(filmId, new HashSet<>());
-        storage.get(filmId).add(userId);
+        return storage.get(filmId).add(userId);
     }
 
     @Override
-    public void deleteFilmLike(int filmId, long userId) {
+    public boolean deleteFilmLike(int filmId, long userId) {
         Set<Long> likes = storage.get(filmId);
         if (likes == null) {
-            return;
+            return false;
         }
-        likes.remove(userId);
+        boolean result = likes.remove(userId);
+        if (result && likes.isEmpty()) {
+            storage.remove(filmId);
+        }
+        return result;
     }
 
     @Override

@@ -2,12 +2,14 @@ package ru.yandex.practicum.filmorate.service;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import ru.yandex.practicum.filmorate.exceptions.UnknownItem;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.storage.film.FilmStorage;
 import ru.yandex.practicum.filmorate.storage.likes.LikesStorage;
 import ru.yandex.practicum.filmorate.storage.user.UserStorage;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -31,7 +33,7 @@ public class FilmService {
     }
 
     public List<Film> getAll() {
-        return filmStorage.getAll();
+        return filmStorage.stream().collect(Collectors.toList());
     }
 
     public Film create(Film archetype) {
@@ -44,5 +46,47 @@ public class FilmService {
         Film item = filmStorage.update(from);
         log.info("Film {} was successfully updated", item.getId());
         return item;
+    }
+
+    public void addFilmLike(int filmId, long userId) {
+        checkIsKnownFilm(filmId);
+        checkIsKnownUser(userId);
+
+        if (likesStorage.addFilmLike(filmId, userId)) {
+            log.info("Film {} was successfully liked by user {}", filmId, userId);
+        } else {
+            log.info("Film {} is already liked by user {}", filmId, userId);
+        }
+    }
+
+    public void deleteFilmLike(int filmId, long userId) {
+        checkIsKnownFilm(filmId);
+        checkIsKnownUser(userId);
+
+        if (likesStorage.deleteFilmLike(filmId, userId)) {
+            log.info("Film {} was successfully unliked by user {}", filmId, userId);
+        } else {
+            log.info("Unable to unlike the film {}, it is not liked by user {}", filmId, userId);
+        }
+    }
+
+    public List<Film> getPopular(int count) {
+        return filmStorage
+                .stream()
+                .sorted((a,b) -> Integer.compare(likesStorage.getFilmLikesCount(b.getId()), likesStorage.getFilmLikesCount(a.getId())))
+                .limit(count)
+                .collect(Collectors.toList());
+    }
+
+    private void checkIsKnownFilm(int id) {
+        if (!filmStorage.contains(id)) {
+            throw new UnknownItem(""); //TODO
+        }
+    }
+
+    private void checkIsKnownUser(long id) {
+        if (!userStorage.contains(id)) {
+            throw new UnknownItem(""); //TODO
+        }
     }
 }
