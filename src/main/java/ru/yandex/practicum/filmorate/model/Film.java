@@ -13,13 +13,13 @@ import java.time.LocalDate;
 @Value
 @Builder(toBuilder = true)
 public class Film {
-    private int id;
+    int id;
     @NotBlank
-    private String name;
+    String name;
     @Size(max = 200)
-    private String description;
+    String description;
     @MovieEra
-    private LocalDate releaseDate;
+    LocalDate releaseDate;
     @Positive
-    private int duration;
+    int duration;
 }
