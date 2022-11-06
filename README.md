@@ -1,10 +1,10 @@
 # java-filmorate
 
 ## DB Design
-The DB schema was designed in [QuickDBD online editor](https://app.quickdatabasediagrams.com/#/).
+Initialization SQL code: [schema.sql](./src/main/resources/schema.sql).
 
-Script file for restoring: [dbschema.script](./dbschema/dbschema.script).
+The visual DB schema was designed in [dbdiagram.io](https://dbdiagram.io/d).
 
-Visual representation: [dbscema.jpg](./dbschema/dbschema.jpg):
+Visual representation ([dbschema.jpg](./dbschema/dbschema.jpg)):
 
 ![Alt text](./dbschema/dbschema.jpg)
