@@ -18,7 +18,7 @@ import java.util.stream.Stream;
 
 @Component
 @Qualifier("db")
-public abstract class DbUserStorage implements UserStorage{
+public class DbUserStorage implements UserStorage{
     private final JdbcTemplate jdbcTemplate;
     private final UserRowMapper userRowMapper;
 
@@ -90,6 +90,59 @@ public abstract class DbUserStorage implements UserStorage{
                 from.getId()
         );
         return getById(from.getId());
+    }
+
+    @Override
+    public boolean addToUserFriends(long userId, long friendId) {
+        int rowsAffected = jdbcTemplate.update(
+                "INSERT INTO friendship (user_id, friend_id) VALUES (?, ?);",
+                userId,
+                friendId
+        );
+        return rowsAffected > 0;
+    }
+
+    @Override
+    public boolean deleteFromUserFriends(long userId, long friendId) {
+        int rowsAffected = jdbcTemplate.update(
+                "DELETE FROM friendship WHERE user_id=? AND friend_id=?;",
+                userId,
+                friendId
+        );
+        return rowsAffected > 0;
+    }
+
+    @Override
+    public List<User> getUserFriends(long userId) {
+        final String query =
+                "SELECT users.* " +
+                "FROM users RIGHT JOIN ( " +
+                "   SELECT DISTINCT friend_id AS id FROM friendship WHERE user_id=? " +
+                ") AS found ON users.id=found.id;";
+
+        return jdbcTemplate.query(
+                query,
+                this.userRowMapper,
+                userId
+        );
+    }
+
+    @Override
+    public List<User> getCommonUserFriends(long userId, long otherUserId) {
+        final String query =
+                "SELECT users.* " +
+                "FROM users RIGHT JOIN ( " +
+                "   SELECT DISTINCT friend_id AS id FROM friendship WHERE user_id=? " +
+                "   INTERSECT " +
+                "   SELECT DISTINCT friend_id AS id FROM friendship WHERE user_id=? " +
+                ") AS found ON users.id=found.id;";
+
+        return jdbcTemplate.query(
+                query,
+                this.userRowMapper,
+                userId,
+                otherUserId
+        );
     }
 
     private static class UserRowMapper implements RowMapper<User> {

@@ -15,7 +15,7 @@ public class UserService {
     private final UserStorage userStorage;
 
     public UserService(
-            @Qualifier("in-memory") UserStorage userStorage
+            @Qualifier("db") UserStorage userStorage
     ) {
         this.userStorage = userStorage;
     }
