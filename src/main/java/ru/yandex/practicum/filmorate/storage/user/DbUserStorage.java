@@ -17,8 +17,8 @@ import java.util.Objects;
 import java.util.stream.Stream;
 
 @Component
-@Qualifier("user-storage")
-public class DbUserStorage implements UserStorage{
+@Qualifier("db")
+public abstract class DbUserStorage implements UserStorage{
     private final JdbcTemplate jdbcTemplate;
     private final UserRowMapper userRowMapper;
 

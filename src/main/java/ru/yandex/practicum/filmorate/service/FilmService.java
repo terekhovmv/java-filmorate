@@ -20,7 +20,7 @@ public class FilmService {
 
     public FilmService(
             FilmStorage filmStorage,
-            @Qualifier("user-storage") UserStorage userStorage,
+            @Qualifier("in-memory") UserStorage userStorage,
             LikesStorage likesStorage
     ) {
         this.filmStorage = filmStorage;

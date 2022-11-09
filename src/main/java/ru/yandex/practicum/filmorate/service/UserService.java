@@ -4,10 +4,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import ru.yandex.practicum.filmorate.model.User;
-import ru.yandex.practicum.filmorate.storage.friends.FriendsStorage;
 import ru.yandex.practicum.filmorate.storage.user.UserStorage;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -15,14 +13,11 @@ import java.util.stream.Collectors;
 @Service
 public class UserService {
     private final UserStorage userStorage;
-    private final FriendsStorage friendsStorage;
 
     public UserService(
-            @Qualifier("user-storage") UserStorage userStorage,
-            FriendsStorage friendsStorage
+            @Qualifier("in-memory") UserStorage userStorage
     ) {
         this.userStorage = userStorage;
-        this.friendsStorage = friendsStorage;
     }
 
     public User getById(long id) {
@@ -49,7 +44,7 @@ public class UserService {
         userStorage.requireContains(id);
         userStorage.requireContains(friendId);
 
-        if (friendsStorage.addToUserFriends(id, friendId)) {
+        if (userStorage.addToUserFriends(id, friendId)) {
             log.info("User {} was successfully set as friend for {}", friendId, id);
         } else {
             log.info("User {} is already friend for {}", friendId, id);
@@ -60,7 +55,7 @@ public class UserService {
         userStorage.requireContains(id);
         userStorage.requireContains(friendId);
 
-        if (friendsStorage.deleteFromUserFriends(id, friendId)) {
+        if (userStorage.deleteFromUserFriends(id, friendId)) {
             log.info("User {} was successfully unfriended for {}", friendId, id);
         } else {
             log.info("Unable to unfriend the user {} for {}, since they are not friends", friendId, id);
@@ -70,24 +65,14 @@ public class UserService {
     public List<User> getUserFriends(long id) {
         userStorage.requireContains(id);
 
-        List<Long> friendIds = friendsStorage.getUserFriends(id);
-        return getByIds(friendIds);
+        return userStorage.getUserFriends(id);
     }
 
     public List<User> getCommonUserFriends(long id, long otherId) {
         userStorage.requireContains(id);
         userStorage.requireContains(otherId);
 
-        List<Long> friendIds = friendsStorage.getUserFriends(id);
-        List<Long> otherFriendIds = friendsStorage.getUserFriends(otherId);
-
-        List<Long> commonIds = new ArrayList<>();
-        for(Long friendId: friendIds) {
-            if (otherFriendIds.contains(friendId)) {
-                commonIds.add(friendId);
-            }
-        }
-        return getByIds(commonIds);
+        return userStorage.getCommonUserFriends(id, otherId);
     }
 
     private User correctUserIfNeeded(User item) {
@@ -97,16 +82,5 @@ public class UserService {
         }
 
         return item.toBuilder().name(item.getLogin()).build();
-    }
-
-    private List<User> getByIds(List<Long> ids) {
-        List<User> result = new ArrayList<>();
-        for(Long id: ids) {
-            if (userStorage.contains(id)) {
-                result.add(userStorage.getById(id));
-            }
-        }
-
-        return result;
     }
 }

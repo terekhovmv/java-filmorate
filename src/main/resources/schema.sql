@@ -9,7 +9,6 @@ CREATE TABLE IF NOT EXISTS users (
 CREATE TABLE IF NOT EXISTS friendship (
     user_id       bigint      NOT NULL REFERENCES users (id),
     friend_id     bigint      NOT NULL REFERENCES users (id),
-    confirmed     boolean     NOT NULL,
 
     CONSTRAINT pk_friendship PRIMARY KEY (
         user_id,
