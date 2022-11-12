@@ -7,8 +7,8 @@ CREATE TABLE IF NOT EXISTS users (
 );
 
 CREATE TABLE IF NOT EXISTS friendship (
-    user_id       bigint      NOT NULL REFERENCES users (id),
-    friend_id     bigint      NOT NULL REFERENCES users (id),
+    user_id       bigint      NOT NULL REFERENCES users (id) ON DELETE CASCADE,
+    friend_id     bigint      NOT NULL REFERENCES users (id) ON DELETE CASCADE,
 
     CONSTRAINT pk_friendship PRIMARY KEY (
         user_id,
@@ -58,7 +58,8 @@ CREATE TABLE IF NOT EXISTS film_genres (
 DELETE FROM film_genres;
 DELETE FROM likes;
 DELETE FROM films;
-DELETE FROm users;
+DELETE FROM friendship;
+DELETE FROM users;
 
 ALTER TABLE users
     ALTER COLUMN id RESTART WITH 1;
