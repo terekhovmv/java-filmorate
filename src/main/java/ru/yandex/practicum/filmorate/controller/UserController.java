@@ -65,6 +65,7 @@ public class UserController {
     @GetMapping("/{id}/friends/common/{otherId}")
     @ResponseBody
     public List<User> getCommonFriends(@PathVariable long id, @PathVariable long otherId) {
-        return service.getCommonFriends(id, otherId);
+        var a = service.getCommonFriends(id, otherId);
+        return a;
     }
 }

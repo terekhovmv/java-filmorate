@@ -5,7 +5,8 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import ru.yandex.practicum.filmorate.exceptions.UserNotFoundException;
 import ru.yandex.practicum.filmorate.model.User;
-import ru.yandex.practicum.filmorate.storage.StorageQualifiers;
+import ru.yandex.practicum.filmorate.storage.DefaultStorageQualifiers;
+import ru.yandex.practicum.filmorate.storage.friendship.FriendshipStorage;
 import ru.yandex.practicum.filmorate.storage.user.UserStorage;
 
 import java.util.List;
@@ -15,12 +16,16 @@ import java.util.stream.Collectors;
 @Service
 public class UserService {
     private final UserStorage userStorage;
+    private final FriendshipStorage friendshipStorage;
 
     public UserService(
-            @Qualifier(StorageQualifiers.DEFAULT_USER_STORAGE_QUALIFIER)
-            UserStorage userStorage
+            @Qualifier(DefaultStorageQualifiers.USER)
+            UserStorage userStorage,
+            @Qualifier(DefaultStorageQualifiers.USER)
+            FriendshipStorage friendshipStorage
     ) {
         this.userStorage = userStorage;
+        this.friendshipStorage = friendshipStorage;
     }
 
     public User getById(long id) {
@@ -53,7 +58,7 @@ public class UserService {
         requireUser(id);
         requireUser(friendId);
 
-        if (userStorage.addFriend(id, friendId)) {
+        if (friendshipStorage.addFriend(id, friendId)) {
             log.info("User {} was successfully set as friend for {}", friendId, id);
         } else {
             log.info("User {} is already friend for {}", friendId, id);
@@ -64,7 +69,7 @@ public class UserService {
         requireUser(id);
         requireUser(friendId);
 
-        if (userStorage.deleteFriend(id, friendId)) {
+        if (friendshipStorage.deleteFriend(id, friendId)) {
             log.info("User {} was successfully unfriended for {}", friendId, id);
         } else {
             log.info("Unable to unfriend the user {} for {}, since they are not friends", friendId, id);
@@ -74,14 +79,14 @@ public class UserService {
     public List<User> getFriends(long id) {
         requireUser(id);
 
-        return userStorage.getFriends(id).collect(Collectors.toList());
+        return friendshipStorage.getFriends(id).collect(Collectors.toList());
     }
 
     public List<User> getCommonFriends(long id, long otherId) {
         requireUser(id);
         requireUser(otherId);
 
-        return userStorage.getCommonFriends(id, otherId).collect(Collectors.toList());
+        return friendshipStorage.getCommonFriends(id, otherId).collect(Collectors.toList());
     }
 
     private User correctUserIfNeeded(User item) {

@@ -6,7 +6,7 @@ import org.springframework.stereotype.Service;
 import ru.yandex.practicum.filmorate.exceptions.UserNotFoundException;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.model.User;
-import ru.yandex.practicum.filmorate.storage.StorageQualifiers;
+import ru.yandex.practicum.filmorate.storage.DefaultStorageQualifiers;
 import ru.yandex.practicum.filmorate.storage.film.FilmStorage;
 import ru.yandex.practicum.filmorate.storage.likes.LikesStorage;
 import ru.yandex.practicum.filmorate.storage.user.UserStorage;
@@ -23,7 +23,7 @@ public class FilmService {
 
     public FilmService(
             FilmStorage filmStorage,
-            @Qualifier(StorageQualifiers.DEFAULT_USER_STORAGE_QUALIFIER)
+            @Qualifier(DefaultStorageQualifiers.USER)
             UserStorage userStorage,
             LikesStorage likesStorage
     ) {

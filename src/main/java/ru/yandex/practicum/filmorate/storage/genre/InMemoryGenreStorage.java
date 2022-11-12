@@ -3,13 +3,14 @@ package ru.yandex.practicum.filmorate.storage.genre;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 import ru.yandex.practicum.filmorate.model.Genre;
+import ru.yandex.practicum.filmorate.storage.InMemoryStorageQualifiers;
 
 import java.util.HashMap;
 import java.util.Optional;
 import java.util.stream.Stream;
 
 @Component
-@Qualifier("in-memory")
+@Qualifier(InMemoryStorageQualifiers.GENRE)
 public class InMemoryGenreStorage implements GenreStorage {
 
     private static final HashMap<Short, Genre> storage = new HashMap<>();

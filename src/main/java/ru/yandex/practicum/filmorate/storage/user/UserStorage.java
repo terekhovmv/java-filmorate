@@ -11,9 +11,4 @@ public interface UserStorage {
     Stream<User> stream();
     Optional<User> create(User archetype);
     Optional<User> update(User from);
-
-    boolean addFriend(long id, long friendId);
-    boolean deleteFriend(long id, long friendId);
-    Stream<User> getFriends(long id);
-    Stream<User> getCommonFriends(long id, long otherId);
 }

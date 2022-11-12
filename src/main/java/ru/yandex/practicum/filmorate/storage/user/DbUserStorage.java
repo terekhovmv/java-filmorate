@@ -5,27 +5,25 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
-import org.springframework.jdbc.support.rowset.SqlRowSet;
 import org.springframework.stereotype.Component;
 
-import ru.yandex.practicum.filmorate.exceptions.UserNotFoundException;
 import ru.yandex.practicum.filmorate.model.User;
+import ru.yandex.practicum.filmorate.storage.DbStorageQualifiers;
 
 import java.sql.*;
 import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Stream;
 
 @Component
-@Qualifier("db")
+@Qualifier(DbStorageQualifiers.USER)
 public class DbUserStorage implements UserStorage{
     private final JdbcTemplate jdbcTemplate;
     private final RowMapper<User> rowMapper;
 
     public DbUserStorage(JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
-        this.rowMapper = new UserRowMapper();
+        this.rowMapper = new DbUserRowMapper();
     }
 
     @Override
@@ -84,72 +82,5 @@ public class DbUserStorage implements UserStorage{
                 from.getId()
         );
         return getById(from.getId());
-    }
-
-    @Override
-    public boolean addFriend(long id, long friendId) {
-        int rowsAffected = jdbcTemplate.update(
-                "INSERT INTO friendship (user_id, friend_id) VALUES (?, ?);",
-                id,
-                friendId
-        );
-        return rowsAffected > 0;
-    }
-
-    @Override
-    public boolean deleteFriend(long id, long friendId) {
-        int rowsAffected = jdbcTemplate.update(
-                "DELETE FROM friendship WHERE user_id=? AND friend_id=?;",
-                id,
-                friendId
-        );
-        return rowsAffected > 0;
-    }
-
-    @Override
-    public Stream<User> getFriends(long id) {
-        final String query =
-                "SELECT users.* " +
-                "FROM users RIGHT JOIN ( " +
-                "   SELECT DISTINCT friend_id AS id FROM friendship WHERE user_id=? " +
-                ") AS found ON users.id=found.id;";
-
-        return jdbcTemplate.query(
-                query,
-                this.rowMapper,
-                id
-        ).stream();
-    }
-
-    @Override
-    public Stream<User> getCommonFriends(long id, long otherUserId) {
-        final String query =
-                "SELECT users.* " +
-                "FROM users RIGHT JOIN ( " +
-                "   SELECT DISTINCT friend_id AS id FROM friendship WHERE user_id=? " +
-                "   INTERSECT " +
-                "   SELECT DISTINCT friend_id AS id FROM friendship WHERE user_id=? " +
-                ") AS found ON users.id=found.id;";
-
-        return jdbcTemplate.query(
-                query,
-                this.rowMapper,
-                id,
-                otherUserId
-        ).stream();
-    }
-
-    private static class UserRowMapper implements RowMapper<User> {
-        @Override
-        public User mapRow(ResultSet rs, int rowNum) throws SQLException {
-            return User.builder()
-                    .id(rs.getLong("id"))
-                    .email(rs.getString("email"))
-                    .login(rs.getString("login"))
-                    .name(rs.getString("name"))
-                    .login(rs.getString("login"))
-                    .birthday(rs.getDate("birthday").toLocalDate())
-                    .build();
-        }
     }
 }
