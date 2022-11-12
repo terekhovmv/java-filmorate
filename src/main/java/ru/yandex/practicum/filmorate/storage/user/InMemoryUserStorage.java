@@ -20,15 +20,8 @@ public class InMemoryUserStorage implements UserStorage {
     private long lastId = 0;
 
     @Override
-    public boolean contains(long id) {
-        return storage.containsKey(id);
-    }
-
-    @Override
-    public User getById(long id) {
-        requireContains(id);
-
-        return storage.get(id);
+    public Optional<User> getById(long id) {
+        return Optional.ofNullable(storage.get(id));
     }
 
     @Override
@@ -37,32 +30,34 @@ public class InMemoryUserStorage implements UserStorage {
     }
 
     @Override
-    public User create(User archetype) {
+    public Optional<User> create(User archetype) {
         lastId++;
         User item = archetype.toBuilder().id(lastId).build();
 
         storage.put(lastId, item);
-        return item;
+        return Optional.of(item);
     }
 
     @Override
-    public User update(User from) {
+    public Optional<User> update(User from) {
         long id = from.getId();
-        requireContains(id);
+        if (!storage.containsKey(id)) {
+            return Optional.empty();
+        }
 
         storage.put(id, from);
-        return from;
+        return Optional.of(from);
     }
 
     @Override
-    public boolean addToUserFriends(long userId, long friendId) {
-        friendshipStorage.putIfAbsent(userId, new HashSet<>());
-        return friendshipStorage.get(userId).add(friendId);
+    public boolean addFriend(long id, long friendId) {
+        friendshipStorage.putIfAbsent(id, new HashSet<>());
+        return friendshipStorage.get(id).add(friendId);
     }
 
     @Override
-    public boolean deleteFromUserFriends(long userId, long friendId) {
-        Set<Long> friends = friendshipStorage.get(userId);
+    public boolean deleteFriend(long id, long friendId) {
+        Set<Long> friends = friendshipStorage.get(id);
         if (friends == null) {
             return false;
         }
@@ -70,28 +65,28 @@ public class InMemoryUserStorage implements UserStorage {
     }
 
     @Override
-    public List<User> getUserFriends(long userId) {
-        Set<Long> friends = friendshipStorage.get(userId);
+    public Stream<User> getFriends(long id) {
+        Set<Long> friends = friendshipStorage.get(id);
         if (friends == null) {
-            return List.of();
+            return Stream.empty();
         }
-        return friends.stream().map((id)->storage.get(id)).collect(Collectors.toList());
+        return friends.stream().map((userId)->storage.get(userId));
     }
 
     @Override
-    public List<User> getCommonUserFriends(long userId, long otherUserId) {
+    public Stream<User> getCommonFriends(long id, long otherId) {
         Set<Long> intersection = new HashSet<Long>(
                 Objects.requireNonNullElse(
-                        friendshipStorage.get(userId),
+                        friendshipStorage.get(id),
                         Set.of()
                 )
         );
         intersection.retainAll(
                 Objects.requireNonNullElse(
-                        friendshipStorage.get(otherUserId),
+                        friendshipStorage.get(otherId),
                         Set.of()
                 )
         );
-        return intersection.stream().map((id)->storage.get(id)).collect(Collectors.toList());
+        return intersection.stream().map((userId)->storage.get(userId));
     }
 }

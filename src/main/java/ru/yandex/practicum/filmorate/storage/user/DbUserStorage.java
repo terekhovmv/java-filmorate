@@ -14,6 +14,7 @@ import ru.yandex.practicum.filmorate.model.User;
 import java.sql.*;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.stream.Stream;
 
 @Component
@@ -28,23 +29,16 @@ public class DbUserStorage implements UserStorage{
     }
 
     @Override
-    public boolean contains(long id) {
-        SqlRowSet result = jdbcTemplate.queryForRowSet("SELECT id FROM users WHERE id=?;", id);
-        return result.next();
-    }
-
-    @Override
-    public User getById(long id) {
-        List<User> foundUsers = jdbcTemplate.query(
+    public Optional<User> getById(long id) {
+        List<User> found = jdbcTemplate.query(
                 "SELECT * FROM users WHERE id=?;",
                 this.rowMapper,
                 id
         );
-        if (foundUsers.size() == 0) {
-            throw new UserNotFoundException(id);
+        if (found.size() == 0) {
+            return Optional.empty();
         }
-
-        return foundUsers.get(0);
+        return Optional.of(found.get(0));
     }
 
     @Override
@@ -56,7 +50,7 @@ public class DbUserStorage implements UserStorage{
     }
 
     @Override
-    public User create(User archetype) {
+    public Optional<User> create(User archetype) {
         KeyHolder generatedKeyHolder = new GeneratedKeyHolder();
         jdbcTemplate.update(
                 connection -> {
@@ -73,14 +67,14 @@ public class DbUserStorage implements UserStorage{
                 generatedKeyHolder
         );
         Number id = generatedKeyHolder.getKey();
-        Objects.requireNonNull(id, "Unexpected issue on adding user " + archetype.getLogin());
+        if (id == null) {
+            return Optional.empty();
+        }
         return getById(id.longValue());
     }
 
     @Override
-    public User update(User from) {
-        requireContains(from.getId());
-
+    public Optional<User> update(User from) {
         jdbcTemplate.update(
                 "UPDATE users SET email=?, login=?, name=?, birthday=? WHERE id=?;",
                 from.getEmail(),
@@ -93,27 +87,27 @@ public class DbUserStorage implements UserStorage{
     }
 
     @Override
-    public boolean addToUserFriends(long userId, long friendId) {
+    public boolean addFriend(long id, long friendId) {
         int rowsAffected = jdbcTemplate.update(
                 "INSERT INTO friendship (user_id, friend_id) VALUES (?, ?);",
-                userId,
+                id,
                 friendId
         );
         return rowsAffected > 0;
     }
 
     @Override
-    public boolean deleteFromUserFriends(long userId, long friendId) {
+    public boolean deleteFriend(long id, long friendId) {
         int rowsAffected = jdbcTemplate.update(
                 "DELETE FROM friendship WHERE user_id=? AND friend_id=?;",
-                userId,
+                id,
                 friendId
         );
         return rowsAffected > 0;
     }
 
     @Override
-    public List<User> getUserFriends(long userId) {
+    public Stream<User> getFriends(long id) {
         final String query =
                 "SELECT users.* " +
                 "FROM users RIGHT JOIN ( " +
@@ -123,12 +117,12 @@ public class DbUserStorage implements UserStorage{
         return jdbcTemplate.query(
                 query,
                 this.rowMapper,
-                userId
-        );
+                id
+        ).stream();
     }
 
     @Override
-    public List<User> getCommonUserFriends(long userId, long otherUserId) {
+    public Stream<User> getCommonFriends(long id, long otherUserId) {
         final String query =
                 "SELECT users.* " +
                 "FROM users RIGHT JOIN ( " +
@@ -140,9 +134,9 @@ public class DbUserStorage implements UserStorage{
         return jdbcTemplate.query(
                 query,
                 this.rowMapper,
-                userId,
+                id,
                 otherUserId
-        );
+        ).stream();
     }
 
     private static class UserRowMapper implements RowMapper<User> {

@@ -3,7 +3,9 @@ package ru.yandex.practicum.filmorate.service;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
+import ru.yandex.practicum.filmorate.exceptions.UserNotFoundException;
 import ru.yandex.practicum.filmorate.model.Film;
+import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.storage.film.FilmStorage;
 import ru.yandex.practicum.filmorate.storage.likes.LikesStorage;
 import ru.yandex.practicum.filmorate.storage.user.UserStorage;
@@ -50,7 +52,7 @@ public class FilmService {
 
     public void addFilmLike(int filmId, long userId) {
         filmStorage.requireContains(filmId);
-        userStorage.requireContains(userId);
+        requireUser(userId);
 
         if (likesStorage.addFilmLike(filmId, userId)) {
             log.info("Film {} was successfully liked by user {}", filmId, userId);
@@ -61,7 +63,7 @@ public class FilmService {
 
     public void deleteFilmLike(int filmId, long userId) {
         filmStorage.requireContains(filmId);
-        userStorage.requireContains(userId);
+        requireUser(userId);
 
         if (likesStorage.deleteFilmLike(filmId, userId)) {
             log.info("Film {} was successfully unliked by user {}", filmId, userId);
@@ -76,5 +78,9 @@ public class FilmService {
                 .sorted((a,b) -> Integer.compare(likesStorage.getFilmLikesCount(b.getId()), likesStorage.getFilmLikesCount(a.getId())))
                 .limit(count)
                 .collect(Collectors.toList());
+    }
+
+    private User requireUser(long id) {
+        return userStorage.getById(id).orElseThrow(() -> new UserNotFoundException(id));
     }
 }
