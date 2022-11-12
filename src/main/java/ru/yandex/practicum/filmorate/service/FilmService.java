@@ -7,10 +7,10 @@ import ru.yandex.practicum.filmorate.exceptions.FilmNotFoundException;
 import ru.yandex.practicum.filmorate.exceptions.UserNotFoundException;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.model.User;
-import ru.yandex.practicum.filmorate.storage.DefaultStorageQualifiers;
-import ru.yandex.practicum.filmorate.storage.film.FilmStorage;
-import ru.yandex.practicum.filmorate.storage.likes.LikesStorage;
-import ru.yandex.practicum.filmorate.storage.user.UserStorage;
+import ru.yandex.practicum.filmorate.storage.DefaultStorageConsts;
+import ru.yandex.practicum.filmorate.storage.FilmStorage;
+import ru.yandex.practicum.filmorate.storage.LikesStorage;
+import ru.yandex.practicum.filmorate.storage.UserStorage;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -23,9 +23,9 @@ public class FilmService {
     private final LikesStorage likesStorage;
 
     public FilmService(
-            @Qualifier(DefaultStorageQualifiers.FILM)
+            @Qualifier(DefaultStorageConsts.QUALIFIER)
             FilmStorage filmStorage,
-            @Qualifier(DefaultStorageQualifiers.USER)
+            @Qualifier(DefaultStorageConsts.QUALIFIER)
             UserStorage userStorage,
             LikesStorage likesStorage
     ) {

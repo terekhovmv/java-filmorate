@@ -1,16 +1,16 @@
-package ru.yandex.practicum.filmorate.storage.mpa;
+package ru.yandex.practicum.filmorate.storage.inmemory;
 
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 import ru.yandex.practicum.filmorate.model.Mpa;
-import ru.yandex.practicum.filmorate.storage.InMemoryStorageQualifiers;
+import ru.yandex.practicum.filmorate.storage.MpaStorage;
 
 import java.util.HashMap;
 import java.util.Optional;
 import java.util.stream.Stream;
 
 @Component
-@Qualifier(InMemoryStorageQualifiers.MPA)
+@Qualifier(InMemoryStorageConsts.QUALIFIER)
 public class InMemoryMpaStorage implements MpaStorage {
 
     private static final HashMap<Short, Mpa> storage = new HashMap<>();

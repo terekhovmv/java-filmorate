@@ -4,8 +4,8 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import ru.yandex.practicum.filmorate.exceptions.MpaNotFoundException;
 import ru.yandex.practicum.filmorate.model.Mpa;
-import ru.yandex.practicum.filmorate.storage.DefaultStorageQualifiers;
-import ru.yandex.practicum.filmorate.storage.mpa.MpaStorage;
+import ru.yandex.practicum.filmorate.storage.DefaultStorageConsts;
+import ru.yandex.practicum.filmorate.storage.MpaStorage;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -15,7 +15,7 @@ public class MpaService {
     private final MpaStorage storage;
 
     public MpaService(
-            @Qualifier(DefaultStorageQualifiers.MPA)
+            @Qualifier(DefaultStorageConsts.QUALIFIER)
             MpaStorage storage
     ) {
         this.storage = storage;

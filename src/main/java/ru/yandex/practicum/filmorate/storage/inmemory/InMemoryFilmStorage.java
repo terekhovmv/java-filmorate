@@ -1,18 +1,17 @@
-package ru.yandex.practicum.filmorate.storage.film;
+package ru.yandex.practicum.filmorate.storage.inmemory;
 
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 
 import ru.yandex.practicum.filmorate.model.Film;
-import ru.yandex.practicum.filmorate.storage.InMemoryStorageQualifiers;
-import ru.yandex.practicum.filmorate.storage.likes.InMemoryLikesStorage;
+import ru.yandex.practicum.filmorate.storage.FilmStorage;
 
 import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 @Component
-@Qualifier(InMemoryStorageQualifiers.FILM)
+@Qualifier(InMemoryStorageConsts.QUALIFIER)
 public class InMemoryFilmStorage implements FilmStorage {
     private final InMemoryLikesStorage likesStorage;
     private final Map<Integer, Film> storage = new HashMap<>();

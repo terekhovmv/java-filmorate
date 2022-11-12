@@ -4,8 +4,8 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import ru.yandex.practicum.filmorate.exceptions.GenreNotFoundException;
 import ru.yandex.practicum.filmorate.model.Genre;
-import ru.yandex.practicum.filmorate.storage.DefaultStorageQualifiers;
-import ru.yandex.practicum.filmorate.storage.genre.GenreStorage;
+import ru.yandex.practicum.filmorate.storage.DefaultStorageConsts;
+import ru.yandex.practicum.filmorate.storage.GenreStorage;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -15,7 +15,7 @@ public class GenreService {
     private final GenreStorage storage;
 
     public GenreService(
-            @Qualifier(DefaultStorageQualifiers.GENRE)
+            @Qualifier(DefaultStorageConsts.QUALIFIER)
             GenreStorage storage
     ) {
         this.storage = storage;

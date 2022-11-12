@@ -1,13 +1,13 @@
-package ru.yandex.practicum.filmorate.storage.likes;
+package ru.yandex.practicum.filmorate.storage.inmemory;
 
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
-import ru.yandex.practicum.filmorate.storage.InMemoryStorageQualifiers;
+import ru.yandex.practicum.filmorate.storage.LikesStorage;
 
 import java.util.*;
 
 @Component
-@Qualifier(InMemoryStorageQualifiers.LIKES)
+@Qualifier(InMemoryStorageConsts.QUALIFIER)
 public class InMemoryLikesStorage implements LikesStorage {
     private final Map<Integer, Set<Long>> storage = new HashMap<>();
 

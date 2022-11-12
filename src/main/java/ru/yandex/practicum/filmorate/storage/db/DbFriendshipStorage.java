@@ -1,4 +1,4 @@
-package ru.yandex.practicum.filmorate.storage.friendship;
+package ru.yandex.practicum.filmorate.storage.db;
 
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -6,14 +6,13 @@ import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Component;
 
 import ru.yandex.practicum.filmorate.model.User;
-import ru.yandex.practicum.filmorate.storage.DbStorageQualifiers;
-import ru.yandex.practicum.filmorate.storage.user.DbUserRowMapper;
+import ru.yandex.practicum.filmorate.storage.FriendshipStorage;
 
 import java.util.stream.Stream;
 
 @Component
-@Qualifier(DbStorageQualifiers.USER)
-public class DbFriendshipStorage implements FriendshipStorage{
+@Qualifier(DbStorageConsts.QUALIFIER)
+public class DbFriendshipStorage implements FriendshipStorage {
     private final JdbcTemplate jdbcTemplate;
     private final RowMapper<User> rowMapper;
 

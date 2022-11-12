@@ -1,17 +1,16 @@
-package ru.yandex.practicum.filmorate.storage.friendship;
+package ru.yandex.practicum.filmorate.storage.inmemory;
 
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 import ru.yandex.practicum.filmorate.model.User;
-import ru.yandex.practicum.filmorate.storage.InMemoryStorageQualifiers;
-import ru.yandex.practicum.filmorate.storage.user.InMemoryUserStorage;
-import ru.yandex.practicum.filmorate.storage.user.UserStorage;
+import ru.yandex.practicum.filmorate.storage.FriendshipStorage;
+import ru.yandex.practicum.filmorate.storage.UserStorage;
 
 import java.util.*;
 import java.util.stream.Stream;
 
 @Component
-@Qualifier(InMemoryStorageQualifiers.USER)
+@Qualifier(InMemoryStorageConsts.QUALIFIER)
 public class InMemoryFriendshipStorage implements FriendshipStorage {
     private final UserStorage userStorage;
     private final Map<Long, Set<Long>> storage = new HashMap<>();

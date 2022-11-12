@@ -5,9 +5,9 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import ru.yandex.practicum.filmorate.exceptions.UserNotFoundException;
 import ru.yandex.practicum.filmorate.model.User;
-import ru.yandex.practicum.filmorate.storage.DefaultStorageQualifiers;
-import ru.yandex.practicum.filmorate.storage.friendship.FriendshipStorage;
-import ru.yandex.practicum.filmorate.storage.user.UserStorage;
+import ru.yandex.practicum.filmorate.storage.DefaultStorageConsts;
+import ru.yandex.practicum.filmorate.storage.FriendshipStorage;
+import ru.yandex.practicum.filmorate.storage.UserStorage;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -19,9 +19,9 @@ public class UserService {
     private final FriendshipStorage friendshipStorage;
 
     public UserService(
-            @Qualifier(DefaultStorageQualifiers.USER)
+            @Qualifier(DefaultStorageConsts.QUALIFIER)
             UserStorage userStorage,
-            @Qualifier(DefaultStorageQualifiers.USER)
+            @Qualifier(DefaultStorageConsts.QUALIFIER)
             FriendshipStorage friendshipStorage
     ) {
         this.userStorage = userStorage;

@@ -1,16 +1,16 @@
-package ru.yandex.practicum.filmorate.storage.user;
+package ru.yandex.practicum.filmorate.storage.inmemory;
 
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 
 import ru.yandex.practicum.filmorate.model.User;
-import ru.yandex.practicum.filmorate.storage.InMemoryStorageQualifiers;
+import ru.yandex.practicum.filmorate.storage.UserStorage;
 
 import java.util.*;
 import java.util.stream.Stream;
 
 @Component
-@Qualifier(InMemoryStorageQualifiers.USER)
+@Qualifier(InMemoryStorageConsts.QUALIFIER)
 public class InMemoryUserStorage implements UserStorage {
     private final Map<Long, User> storage = new HashMap<>();
 

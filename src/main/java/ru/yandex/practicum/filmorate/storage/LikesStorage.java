@@ -1,4 +1,4 @@
-package ru.yandex.practicum.filmorate.storage.likes;
+package ru.yandex.practicum.filmorate.storage;
 
 public interface LikesStorage {
     boolean addLike(int filmId, long userId);

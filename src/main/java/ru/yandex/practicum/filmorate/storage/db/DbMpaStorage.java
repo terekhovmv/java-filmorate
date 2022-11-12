@@ -1,11 +1,11 @@
-package ru.yandex.practicum.filmorate.storage.genre;
+package ru.yandex.practicum.filmorate.storage.db;
 
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Component;
-import ru.yandex.practicum.filmorate.model.Genre;
-import ru.yandex.practicum.filmorate.storage.DbStorageQualifiers;
+import ru.yandex.practicum.filmorate.model.Mpa;
+import ru.yandex.practicum.filmorate.storage.MpaStorage;
 
 import java.sql.*;
 import java.util.List;
@@ -13,20 +13,20 @@ import java.util.Optional;
 import java.util.stream.Stream;
 
 @Component
-@Qualifier(DbStorageQualifiers.GENRE)
-public class DbGenreStorage implements GenreStorage {
+@Qualifier(DbStorageConsts.QUALIFIER)
+public class DbMpaStorage implements MpaStorage {
     private final JdbcTemplate jdbcTemplate;
-    private final RowMapper<Genre> rowMapper;
+    private final RowMapper<Mpa> rowMapper;
 
-    public DbGenreStorage(JdbcTemplate jdbcTemplate) {
+    public DbMpaStorage(JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
-        rowMapper = new GenreRowMapper();
+        rowMapper = new MpaRowMapper();
     }
 
     @Override
-    public Optional<Genre> getById(short id) {
-        List<Genre> found = jdbcTemplate.query(
-                "SELECT * FROM genres WHERE id=?;",
+    public Optional<Mpa> getById(short id) {
+        List<Mpa> found = jdbcTemplate.query(
+                "SELECT * FROM mpa WHERE id=?;",
                 this.rowMapper,
                 id
         );
@@ -37,17 +37,17 @@ public class DbGenreStorage implements GenreStorage {
     }
 
     @Override
-    public Stream<Genre> stream() {
+    public Stream<Mpa> stream() {
         return jdbcTemplate.query(
-                "SELECT * FROM genres;",
+                "SELECT * FROM mpa;",
                 this.rowMapper
         ).stream();
     }
 
-    private static class GenreRowMapper implements RowMapper<Genre> {
+    private static class MpaRowMapper implements RowMapper<Mpa> {
         @Override
-        public Genre mapRow(ResultSet rs, int rowNum) throws SQLException {
-            return Genre.builder()
+        public Mpa mapRow(ResultSet rs, int rowNum) throws SQLException {
+            return Mpa.builder()
                     .id(rs.getShort("id"))
                     .name(rs.getString("name"))
                     .build();

@@ -1,4 +1,4 @@
-package ru.yandex.practicum.filmorate.storage.user;
+package ru.yandex.practicum.filmorate.storage.db;
 
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -8,7 +8,7 @@ import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Component;
 
 import ru.yandex.practicum.filmorate.model.User;
-import ru.yandex.practicum.filmorate.storage.DbStorageQualifiers;
+import ru.yandex.practicum.filmorate.storage.UserStorage;
 
 import java.sql.*;
 import java.util.List;
@@ -16,8 +16,8 @@ import java.util.Optional;
 import java.util.stream.Stream;
 
 @Component
-@Qualifier(DbStorageQualifiers.USER)
-public class DbUserStorage implements UserStorage{
+@Qualifier(DbStorageConsts.QUALIFIER)
+public class DbUserStorage implements UserStorage {
     private final JdbcTemplate jdbcTemplate;
     private final RowMapper<User> rowMapper;
 
