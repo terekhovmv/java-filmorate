@@ -1,6 +1,6 @@
 package ru.yandex.practicum.filmorate.storage.mpa;
 
-import ru.yandex.practicum.filmorate.exceptions.FilmNotFoundException;
+import ru.yandex.practicum.filmorate.exceptions.MpaNotFoundException;
 import ru.yandex.practicum.filmorate.model.Mpa;
 
 import java.util.stream.Stream;
@@ -12,7 +12,7 @@ public interface MpaStorage {
 
     default void requireContains(short id) {
         if (!contains(id)) {
-            throw new FilmNotFoundException(id);
+            throw new MpaNotFoundException(id);
         }
     }
 }
