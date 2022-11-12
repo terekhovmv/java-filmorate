@@ -4,6 +4,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import ru.yandex.practicum.filmorate.model.User;
+import ru.yandex.practicum.filmorate.storage.StorageQualifiers;
 import ru.yandex.practicum.filmorate.storage.user.UserStorage;
 
 import java.util.List;
@@ -15,7 +16,8 @@ public class UserService {
     private final UserStorage userStorage;
 
     public UserService(
-            @Qualifier("db") UserStorage userStorage
+            @Qualifier(StorageQualifiers.DEFAULT_USER_STORAGE_QUALIFIER)
+            UserStorage userStorage
     ) {
         this.userStorage = userStorage;
     }
