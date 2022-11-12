@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import ru.yandex.practicum.filmorate.exceptions.FilmNotFoundException;
+import ru.yandex.practicum.filmorate.exceptions.GenreNotFoundException;
 import ru.yandex.practicum.filmorate.exceptions.MpaNotFoundException;
 import ru.yandex.practicum.filmorate.exceptions.UserNotFoundException;
 import ru.yandex.practicum.filmorate.model.ErrorResponse;
@@ -18,13 +19,15 @@ import javax.validation.ValidationException;
 @RestControllerAdvice(assignableTypes = {
         UserController.class,
         FilmController.class,
-        MpaController.class
+        MpaController.class,
+        GenreController.class
 })
 public class ErrorHandler {
     @ExceptionHandler({
             UserNotFoundException.class,
             FilmNotFoundException.class,
-            MpaNotFoundException.class
+            MpaNotFoundException.class,
+            GenreNotFoundException.class
     })
     @ResponseStatus(HttpStatus.NOT_FOUND)
     public ErrorResponse handleNotFoundException(RuntimeException exception) {
