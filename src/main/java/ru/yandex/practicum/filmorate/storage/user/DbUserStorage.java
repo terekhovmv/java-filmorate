@@ -20,11 +20,11 @@ import java.util.stream.Stream;
 @Qualifier("db")
 public class DbUserStorage implements UserStorage{
     private final JdbcTemplate jdbcTemplate;
-    private final UserRowMapper userRowMapper;
+    private final RowMapper<User> rowMapper;
 
     public DbUserStorage(JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
-        this.userRowMapper = new UserRowMapper();
+        this.rowMapper = new UserRowMapper();
     }
 
     @Override
@@ -37,7 +37,7 @@ public class DbUserStorage implements UserStorage{
     public User getById(long id) {
         List<User> foundUsers = jdbcTemplate.query(
                 "SELECT * FROM users WHERE id=?;",
-                this.userRowMapper,
+                this.rowMapper,
                 id
         );
         if (foundUsers.size() == 0) {
@@ -51,7 +51,7 @@ public class DbUserStorage implements UserStorage{
     public Stream<User> stream() {
         return jdbcTemplate.query(
                 "SELECT * FROM users;",
-                this.userRowMapper
+                this.rowMapper
         ).stream();
     }
 
@@ -122,7 +122,7 @@ public class DbUserStorage implements UserStorage{
 
         return jdbcTemplate.query(
                 query,
-                this.userRowMapper,
+                this.rowMapper,
                 userId
         );
     }
@@ -139,7 +139,7 @@ public class DbUserStorage implements UserStorage{
 
         return jdbcTemplate.query(
                 query,
-                this.userRowMapper,
+                this.rowMapper,
                 userId,
                 otherUserId
         );
