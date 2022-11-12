@@ -1,12 +1,15 @@
 package ru.yandex.practicum.filmorate.storage.genre;
 
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 import ru.yandex.practicum.filmorate.model.Genre;
 
 import java.util.HashMap;
+import java.util.Optional;
 import java.util.stream.Stream;
 
 @Component
+@Qualifier("in-memory")
 public class InMemoryGenreStorage implements GenreStorage {
 
     private static final HashMap<Short, Genre> storage = new HashMap<>();
@@ -21,15 +24,8 @@ public class InMemoryGenreStorage implements GenreStorage {
     }
 
     @Override
-    public boolean contains(short id) {
-        return storage.containsKey(id);
-    }
-
-    @Override
-    public Genre getById(short id) {
-        requireContains(id);
-
-        return storage.get(id);
+    public Optional<Genre> getById(short id) {
+        return Optional.ofNullable(storage.get(id));
     }
 
     @Override

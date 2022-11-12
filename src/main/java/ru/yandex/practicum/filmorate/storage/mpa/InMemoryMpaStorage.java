@@ -1,12 +1,15 @@
 package ru.yandex.practicum.filmorate.storage.mpa;
 
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 import ru.yandex.practicum.filmorate.model.Mpa;
 
 import java.util.HashMap;
+import java.util.Optional;
 import java.util.stream.Stream;
 
 @Component
+@Qualifier("in-memory")
 public class InMemoryMpaStorage implements MpaStorage {
 
     private static final HashMap<Short, Mpa> storage = new HashMap<>();
@@ -20,15 +23,8 @@ public class InMemoryMpaStorage implements MpaStorage {
     }
 
     @Override
-    public boolean contains(short id) {
-        return storage.containsKey(id);
-    }
-
-    @Override
-    public Mpa getById(short id) {
-        requireContains(id);
-
-        return storage.get(id);
+    public Optional<Mpa> getById(short id) {
+        return Optional.ofNullable(storage.get(id));
     }
 
     @Override

@@ -3,13 +3,12 @@ package ru.yandex.practicum.filmorate.storage.mpa;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
-import org.springframework.jdbc.support.rowset.SqlRowSet;
 import org.springframework.stereotype.Component;
-import ru.yandex.practicum.filmorate.exceptions.MpaNotFoundException;
 import ru.yandex.practicum.filmorate.model.Mpa;
 
 import java.sql.*;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Stream;
 
 @Component
@@ -24,23 +23,16 @@ public class DbMpaStorage implements MpaStorage {
     }
 
     @Override
-    public boolean contains(short id) {
-        SqlRowSet result = jdbcTemplate.queryForRowSet("SELECT id FROM mpa WHERE id=?;", id);
-        return result.next();
-    }
-
-    @Override
-    public Mpa getById(short id) {
+    public Optional<Mpa> getById(short id) {
         List<Mpa> found = jdbcTemplate.query(
                 "SELECT * FROM mpa WHERE id=?;",
                 this.rowMapper,
                 id
         );
         if (found.size() == 0) {
-            throw new MpaNotFoundException(id);
+            return Optional.empty();
         }
-
-        return found.get(0);
+        return Optional.of(found.get(0));
     }
 
     @Override
