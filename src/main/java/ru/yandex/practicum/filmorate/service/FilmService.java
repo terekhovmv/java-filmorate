@@ -4,15 +4,16 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import ru.yandex.practicum.filmorate.exceptions.FilmNotFoundException;
+import ru.yandex.practicum.filmorate.exceptions.GenreNotFoundException;
+import ru.yandex.practicum.filmorate.exceptions.MpaNotFoundException;
 import ru.yandex.practicum.filmorate.exceptions.UserNotFoundException;
-import ru.yandex.practicum.filmorate.model.Film;
-import ru.yandex.practicum.filmorate.model.User;
-import ru.yandex.practicum.filmorate.storage.DefaultStorageConsts;
-import ru.yandex.practicum.filmorate.storage.FilmStorage;
-import ru.yandex.practicum.filmorate.storage.LikesStorage;
-import ru.yandex.practicum.filmorate.storage.UserStorage;
+import ru.yandex.practicum.filmorate.model.*;
+import ru.yandex.practicum.filmorate.storage.*;
 
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -20,6 +21,8 @@ import java.util.stream.Collectors;
 public class FilmService {
     private final FilmStorage filmStorage;
     private final UserStorage userStorage;
+    private final MpaStorage mpaStorage;
+    private final GenreStorage genreStorage;
     private final LikesStorage likesStorage;
 
     public FilmService(
@@ -27,10 +30,16 @@ public class FilmService {
             FilmStorage filmStorage,
             @Qualifier(DefaultStorageConsts.QUALIFIER)
             UserStorage userStorage,
+            @Qualifier(DefaultStorageConsts.QUALIFIER)
+            MpaStorage mpaStorage,
+            @Qualifier(DefaultStorageConsts.QUALIFIER)
+            GenreStorage genreStorage,
             LikesStorage likesStorage
     ) {
         this.filmStorage = filmStorage;
         this.userStorage = userStorage;
+        this.mpaStorage = mpaStorage;
+        this.genreStorage = genreStorage;
         this.likesStorage = likesStorage;
     }
 
@@ -43,17 +52,29 @@ public class FilmService {
     }
 
     public Film create(Film archetype) {
-        Film created = filmStorage.create(archetype).orElseThrow(
-                () -> new RuntimeException("Unable to create the film " + archetype.getName()));
+        Film corrected = correctFilmIfNeeded(archetype);
+        requireMpa(corrected.getMpa().getId());
+        for(Genre genre: corrected.getGenres()) {
+            requireGenre(genre.getId());
+        }
+
+        Film created = filmStorage.create(corrected).orElseThrow(
+                () -> new RuntimeException("Unable to create the film " + corrected.getName()));
         log.info("Film {} was successfully added with id {}", created.getName(), created.getId());
         return created;
     }
 
     public Film update(Film from) {
-        requireFilm(from.getId());
+        Film corrected = correctFilmIfNeeded(from);
 
-        Film updated = filmStorage.update(from).orElseThrow(
-                () -> new RuntimeException("Unable to update the film #" + from.getId()));
+        requireFilm(corrected.getId());
+        requireMpa(corrected.getMpa().getId());
+        for(Genre genre: corrected.getGenres()) {
+            requireGenre(genre.getId());
+        }
+
+        Film updated = filmStorage.update(corrected).orElseThrow(
+                () -> new RuntimeException("Unable to update the film #" + corrected.getId()));
         log.info("Film {} was successfully updated", updated.getId());
         return updated;
     }
@@ -90,5 +111,33 @@ public class FilmService {
 
     private Film requireFilm(int id) {
         return filmStorage.getById(id).orElseThrow(() -> new FilmNotFoundException(id));
+    }
+
+    private Mpa requireMpa(short id) {
+        return mpaStorage.getById(id).orElseThrow(() -> new MpaNotFoundException(id));
+    }
+
+    private Genre requireGenre(short id) {
+        return genreStorage.getById(id).orElseThrow(() -> new GenreNotFoundException(id));
+    }
+
+    private Film correctFilmIfNeeded(Film item) {
+        List<Genre> itemGenres = item.getGenres();
+        if (itemGenres == null) {
+            return item.toBuilder().genres(new ArrayList<>()).build();
+        }
+        Set<Short> uniqueGenreIds = new HashSet<>();
+        List<Genre> uniqueGenres = new ArrayList();
+        for(Genre genre: itemGenres) {
+            if (genre != null && !uniqueGenreIds.contains(genre.getId())) {
+                uniqueGenreIds.add(genre.getId());
+                uniqueGenres.add(genre);
+            }
+        }
+        if (uniqueGenres.size() != itemGenres.size()) {
+            return item.toBuilder().genres(uniqueGenres).build();
+        }
+
+        return item;
     }
 }

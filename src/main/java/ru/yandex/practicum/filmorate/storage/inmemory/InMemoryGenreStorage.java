@@ -1,5 +1,6 @@
 package ru.yandex.practicum.filmorate.storage.inmemory;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 import ru.yandex.practicum.filmorate.model.Genre;
@@ -9,6 +10,7 @@ import java.util.HashMap;
 import java.util.Optional;
 import java.util.stream.Stream;
 
+@Slf4j
 @Component
 @Qualifier(InMemoryStorageConsts.QUALIFIER)
 public class InMemoryGenreStorage implements GenreStorage {

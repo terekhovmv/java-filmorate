@@ -4,7 +4,10 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 
 import ru.yandex.practicum.filmorate.model.Film;
+import ru.yandex.practicum.filmorate.storage.DefaultStorageConsts;
 import ru.yandex.practicum.filmorate.storage.FilmStorage;
+import ru.yandex.practicum.filmorate.storage.GenreStorage;
+import ru.yandex.practicum.filmorate.storage.MpaStorage;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -14,23 +17,35 @@ import java.util.stream.Stream;
 @Qualifier(InMemoryStorageConsts.QUALIFIER)
 public class InMemoryFilmStorage implements FilmStorage {
     private final InMemoryLikesStorage likesStorage;
+    private final MpaStorage mpaStorage;
+    private final GenreStorage genreStorage;
     private final Map<Integer, Film> storage = new HashMap<>();
     private int lastId = 0;
 
     public InMemoryFilmStorage(
-        InMemoryLikesStorage likesStorage
+        InMemoryLikesStorage likesStorage,
+        @Qualifier(DefaultStorageConsts.QUALIFIER)
+        MpaStorage mpaStorage,
+        @Qualifier(DefaultStorageConsts.QUALIFIER)
+        GenreStorage genreStorage
     ) {
         this.likesStorage = likesStorage;
+        this.mpaStorage = mpaStorage;
+        this.genreStorage = genreStorage;
     }
 
     @Override
     public Optional<Film> getById(int id) {
-        return Optional.ofNullable(storage.get(id));
+        Film item = storage.get(id);
+        if (item == null) {
+            return Optional.empty();
+        }
+        return Optional.of(addCalculatedData(item));
     }
 
     @Override
     public Stream<Film> stream() {
-        return storage.values().stream();
+        return storage.values().stream().map(this::addCalculatedData);
     }
 
     @Override
@@ -39,7 +54,7 @@ public class InMemoryFilmStorage implements FilmStorage {
         Film item = archetype.toBuilder().id(lastId).build();
 
         storage.put(lastId, item);
-        return Optional.of(item);
+        return Optional.of(addCalculatedData(item));
     }
 
     @Override
@@ -50,7 +65,7 @@ public class InMemoryFilmStorage implements FilmStorage {
         }
 
         storage.put(id, from);
-        return Optional.of(from);
+        return Optional.of(addCalculatedData(from));
     }
 
     @Override
@@ -59,6 +74,15 @@ public class InMemoryFilmStorage implements FilmStorage {
                 .stream()
                 .sorted((a,b) -> Integer.compare(likesStorage.getLikesCount(b.getId()), likesStorage.getLikesCount(a.getId())))
                 .limit(count)
+                .map(this::addCalculatedData)
                 .collect(Collectors.toList());
+    }
+
+    private Film addCalculatedData(Film film) {
+        return film.toBuilder()
+                .mpa(mpaStorage.getById(film.getMpa().getId()).get())
+                .genres(film.getGenres().stream().map((genreLight)->genreStorage.getById(genreLight.getId()).get()).collect(Collectors.toList()))
+                .rate(likesStorage.getLikesCount(film.getId()))
+                .build();
     }
 }
