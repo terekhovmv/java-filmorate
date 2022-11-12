@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.storage.InMemoryStorageQualifiers;
+import ru.yandex.practicum.filmorate.storage.user.InMemoryUserStorage;
 import ru.yandex.practicum.filmorate.storage.user.UserStorage;
 
 import java.util.*;
@@ -16,8 +17,7 @@ public class InMemoryFriendshipStorage implements FriendshipStorage {
     private final Map<Long, Set<Long>> storage = new HashMap<>();
 
     public InMemoryFriendshipStorage(
-            @Qualifier(InMemoryStorageQualifiers.USER)
-            UserStorage userStorage
+            InMemoryUserStorage userStorage
     ) {
         this.userStorage = userStorage;
     }

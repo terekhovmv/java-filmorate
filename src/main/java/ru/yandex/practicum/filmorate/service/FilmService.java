@@ -3,6 +3,7 @@ package ru.yandex.practicum.filmorate.service;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
+import ru.yandex.practicum.filmorate.exceptions.FilmNotFoundException;
 import ru.yandex.practicum.filmorate.exceptions.UserNotFoundException;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.model.User;
@@ -22,6 +23,7 @@ public class FilmService {
     private final LikesStorage likesStorage;
 
     public FilmService(
+            @Qualifier(DefaultStorageQualifiers.FILM)
             FilmStorage filmStorage,
             @Qualifier(DefaultStorageQualifiers.USER)
             UserStorage userStorage,
@@ -33,7 +35,7 @@ public class FilmService {
     }
 
     public Film getById(int id) {
-        return filmStorage.getById(id);
+        return requireFilm(id);
     }
 
     public List<Film> getAll() {
@@ -41,33 +43,37 @@ public class FilmService {
     }
 
     public Film create(Film archetype) {
-        Film item = filmStorage.create(archetype);
-        log.info("Film {} was successfully added with id {}", item.getName(), item.getId());
-        return item;
+        Film created = filmStorage.create(archetype).orElseThrow(
+                () -> new RuntimeException("Unable to create the film " + archetype.getName()));
+        log.info("Film {} was successfully added with id {}", created.getName(), created.getId());
+        return created;
     }
 
     public Film update(Film from) {
-        Film item = filmStorage.update(from);
-        log.info("Film {} was successfully updated", item.getId());
-        return item;
+        requireFilm(from.getId());
+
+        Film updated = filmStorage.update(from).orElseThrow(
+                () -> new RuntimeException("Unable to update the film #" + from.getId()));
+        log.info("Film {} was successfully updated", updated.getId());
+        return updated;
     }
 
-    public void addFilmLike(int filmId, long userId) {
-        filmStorage.requireContains(filmId);
+    public void addLike(int filmId, long userId) {
+        requireFilm(filmId);
         requireUser(userId);
 
-        if (likesStorage.addFilmLike(filmId, userId)) {
+        if (likesStorage.addLike(filmId, userId)) {
             log.info("Film {} was successfully liked by user {}", filmId, userId);
         } else {
             log.info("Film {} is already liked by user {}", filmId, userId);
         }
     }
 
-    public void deleteFilmLike(int filmId, long userId) {
-        filmStorage.requireContains(filmId);
+    public void deleteLike(int filmId, long userId) {
+        requireFilm(filmId);
         requireUser(userId);
 
-        if (likesStorage.deleteFilmLike(filmId, userId)) {
+        if (likesStorage.deleteLike(filmId, userId)) {
             log.info("Film {} was successfully unliked by user {}", filmId, userId);
         } else {
             log.info("Unable to unlike the film {}, it is not liked by user {}", filmId, userId);
@@ -75,14 +81,14 @@ public class FilmService {
     }
 
     public List<Film> getPopular(int count) {
-        return filmStorage
-                .stream()
-                .sorted((a,b) -> Integer.compare(likesStorage.getFilmLikesCount(b.getId()), likesStorage.getFilmLikesCount(a.getId())))
-                .limit(count)
-                .collect(Collectors.toList());
+        return filmStorage.getPopular(count);
     }
 
     private User requireUser(long id) {
         return userStorage.getById(id).orElseThrow(() -> new UserNotFoundException(id));
+    }
+
+    private Film requireFilm(int id) {
+        return filmStorage.getById(id).orElseThrow(() -> new FilmNotFoundException(id));
     }
 }

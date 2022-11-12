@@ -1,27 +1,32 @@
 package ru.yandex.practicum.filmorate.storage.film;
 
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 
 import ru.yandex.practicum.filmorate.model.Film;
+import ru.yandex.practicum.filmorate.storage.InMemoryStorageQualifiers;
+import ru.yandex.practicum.filmorate.storage.likes.InMemoryLikesStorage;
 
 import java.util.*;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 @Component
+@Qualifier(InMemoryStorageQualifiers.FILM)
 public class InMemoryFilmStorage implements FilmStorage {
+    private final InMemoryLikesStorage likesStorage;
     private final Map<Integer, Film> storage = new HashMap<>();
     private int lastId = 0;
 
-    @Override
-    public boolean contains(int id) {
-        return storage.containsKey(id);
+    public InMemoryFilmStorage(
+        InMemoryLikesStorage likesStorage
+    ) {
+        this.likesStorage = likesStorage;
     }
 
     @Override
-    public Film getById(int id) {
-        requireContains(id);
-
-        return storage.get(id);
+    public Optional<Film> getById(int id) {
+        return Optional.ofNullable(storage.get(id));
     }
 
     @Override
@@ -30,20 +35,31 @@ public class InMemoryFilmStorage implements FilmStorage {
     }
 
     @Override
-    public Film create(Film archetype) {
+    public Optional<Film> create(Film archetype) {
         lastId++;
         Film item = archetype.toBuilder().id(lastId).build();
 
         storage.put(lastId, item);
-        return item;
+        return Optional.of(item);
     }
 
     @Override
-    public Film update(Film from) {
+    public Optional<Film> update(Film from) {
         int id = from.getId();
-        requireContains(id);
+        if (!storage.containsKey(id)) {
+            return Optional.empty();
+        }
 
         storage.put(id, from);
-        return from;
+        return Optional.of(from);
+    }
+
+    @Override
+    public List<Film> getPopular(int count) {
+        return storage.values()
+                .stream()
+                .sorted((a,b) -> Integer.compare(likesStorage.getLikesCount(b.getId()), likesStorage.getLikesCount(a.getId())))
+                .limit(count)
+                .collect(Collectors.toList());
     }
 }

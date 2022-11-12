@@ -13,7 +13,6 @@ import java.util.stream.Stream;
 @Qualifier(InMemoryStorageQualifiers.USER)
 public class InMemoryUserStorage implements UserStorage {
     private final Map<Long, User> storage = new HashMap<>();
-    private final Map<Long, Set<Long>> friendshipStorage = new HashMap<>();
 
     private long lastId = 0;
 
