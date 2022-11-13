@@ -6,6 +6,7 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
+import org.springframework.jdbc.support.rowset.SqlRowSet;
 import org.springframework.stereotype.Component;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.model.Genre;
@@ -35,7 +36,13 @@ public class DbFilmStorage implements FilmStorage {
     }
 
     @Override
-    public Optional<Film> getById(int id) {
+    public boolean contains(int id) {
+        SqlRowSet result = jdbcTemplate.queryForRowSet("SELECT id FROM films WHERE id=?;", id);
+        return result.next();
+    }
+
+    @Override
+    public Optional<Film> get(int id) {
         List<Film> found = jdbcTemplate.query(
                 "SELECT f.*, COUNT(l.user_id) AS rate \n" +
                     "FROM films as f \n" +
@@ -108,7 +115,7 @@ public class DbFilmStorage implements FilmStorage {
                         .map(Genre::getId)
                         .collect(Collectors.toList())
         );
-        return getById(filmId);
+        return get(filmId);
     }
 
     @Override
@@ -144,7 +151,7 @@ public class DbFilmStorage implements FilmStorage {
                 new ArrayList<>(genreIdsToAdd)
         );
 
-        return getById(from.getId());
+        return get(from.getId());
     }
 
     private List<Genre> getFilmGenres(int id) {
@@ -204,7 +211,7 @@ public class DbFilmStorage implements FilmStorage {
                 .duration(rs.getInt("duration"))
                 .rate(rs.getInt("rate"))
                 .mpa(mpaStorage
-                        .getById(rs.getShort("mpa_id"))
+                        .get(rs.getShort("mpa_id"))
                         .orElse(null)
                 )
                 .genres(getFilmGenres(filmId))

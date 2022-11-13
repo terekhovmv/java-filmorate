@@ -29,7 +29,7 @@ public class UserService {
     }
 
     public User getById(long id) {
-        return requireUser(id);
+        return userStorage.require(id);
     }
 
     public List<User> getAll() {
@@ -45,7 +45,7 @@ public class UserService {
     }
 
     public User update(User from) {
-        requireUser(from.getId());
+        userStorage.requireContains(from.getId());
 
         User corrected = correctUserIfNeeded(from);
         User updated = userStorage.update(corrected).orElseThrow(
@@ -55,8 +55,8 @@ public class UserService {
     }
 
     public void addFriend(long id, long friendId) {
-        requireUser(id);
-        requireUser(friendId);
+        userStorage.requireContains(id);
+        userStorage.requireContains(friendId);
 
         if (friendshipStorage.addFriend(id, friendId)) {
             log.info("User {} was successfully set as friend for {}", friendId, id);
@@ -66,8 +66,8 @@ public class UserService {
     }
 
     public void deleteFriend(long id, long friendId) {
-        requireUser(id);
-        requireUser(friendId);
+        userStorage.requireContains(id);
+        userStorage.requireContains(friendId);
 
         if (friendshipStorage.deleteFriend(id, friendId)) {
             log.info("User {} was successfully unfriended for {}", friendId, id);
@@ -77,14 +77,14 @@ public class UserService {
     }
 
     public List<User> getFriends(long id) {
-        requireUser(id);
+        userStorage.requireContains(id);
 
         return friendshipStorage.getFriends(id).collect(Collectors.toList());
     }
 
     public List<User> getCommonFriends(long id, long otherId) {
-        requireUser(id);
-        requireUser(otherId);
+        userStorage.requireContains(id);
+        userStorage.requireContains(otherId);
 
         return friendshipStorage.getCommonFriends(id, otherId).collect(Collectors.toList());
     }
@@ -96,9 +96,5 @@ public class UserService {
         }
 
         return item.toBuilder().name(item.getLogin()).build();
-    }
-
-    private User requireUser(long id) {
-        return userStorage.getById(id).orElseThrow(() -> new UserNotFoundException(id));
     }
 }

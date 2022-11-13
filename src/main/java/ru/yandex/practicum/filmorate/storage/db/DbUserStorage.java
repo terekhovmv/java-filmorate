@@ -5,6 +5,7 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
+import org.springframework.jdbc.support.rowset.SqlRowSet;
 import org.springframework.stereotype.Component;
 
 import ru.yandex.practicum.filmorate.model.User;
@@ -26,7 +27,13 @@ public class DbUserStorage implements UserStorage {
     }
 
     @Override
-    public Optional<User> getById(long id) {
+    public boolean contains(long id) {
+        SqlRowSet result = jdbcTemplate.queryForRowSet("SELECT id FROM users WHERE id=?;", id);
+        return result.next();
+    }
+
+    @Override
+    public Optional<User> get(long id) {
         List<User> found = jdbcTemplate.query(
                 "SELECT * FROM users WHERE id=?;",
                 this.rowMapper,
@@ -67,7 +74,7 @@ public class DbUserStorage implements UserStorage {
         if (id == null) {
             return Optional.empty();
         }
-        return getById(id.longValue());
+        return get(id.longValue());
     }
 
     @Override
@@ -80,6 +87,6 @@ public class DbUserStorage implements UserStorage {
                 from.getBirthday(),
                 from.getId()
         );
-        return getById(from.getId());
+        return get(from.getId());
     }
 }

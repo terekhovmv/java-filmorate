@@ -16,7 +16,12 @@ public class InMemoryUserStorage implements UserStorage {
     private long lastId = 0;
 
     @Override
-    public Optional<User> getById(long id) {
+    public boolean contains(long id) {
+        return storage.containsKey(id);
+    }
+
+    @Override
+    public Optional<User> get(long id) {
         return Optional.ofNullable(storage.get(id));
     }
 

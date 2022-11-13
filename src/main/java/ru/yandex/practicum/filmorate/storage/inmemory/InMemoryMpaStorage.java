@@ -25,7 +25,12 @@ public class InMemoryMpaStorage implements MpaStorage {
     }
 
     @Override
-    public Optional<Mpa> getById(short id) {
+    public boolean contains(short id) {
+        return storage.containsKey(id);
+    }
+
+    @Override
+    public Optional<Mpa> get(short id) {
         return Optional.ofNullable(storage.get(id));
     }
 

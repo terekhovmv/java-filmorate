@@ -28,7 +28,12 @@ public class InMemoryGenreStorage implements GenreStorage {
     }
 
     @Override
-    public Optional<Genre> getById(short id) {
+    public boolean contains(short id) {
+        return storage.containsKey(id);
+    }
+
+    @Override
+    public Optional<Genre> get(short id) {
         return Optional.ofNullable(storage.get(id));
     }
 

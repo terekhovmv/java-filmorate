@@ -3,6 +3,7 @@ package ru.yandex.practicum.filmorate.storage.db;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
+import org.springframework.jdbc.support.rowset.SqlRowSet;
 import org.springframework.stereotype.Component;
 import ru.yandex.practicum.filmorate.model.Genre;
 import ru.yandex.practicum.filmorate.storage.GenreStorage;
@@ -22,7 +23,13 @@ public class DbGenreStorage implements GenreStorage {
     }
 
     @Override
-    public Optional<Genre> getById(short id) {
+    public boolean contains(short id) {
+        SqlRowSet result = jdbcTemplate.queryForRowSet("SELECT id FROM genres WHERE id=?;", id);
+        return result.next();
+    }
+
+    @Override
+    public Optional<Genre> get(short id) {
         List<Genre> found = jdbcTemplate.query(
                 "SELECT * FROM genres WHERE id=?;",
                 this.rowMapper,

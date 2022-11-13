@@ -21,7 +21,7 @@ public class GenreService {
     }
 
     public Genre getById(short id) {
-        return storage.getById(id).orElseThrow(() -> new GenreNotFoundException(id));
+        return storage.require(id);
     }
 
     public List<Genre> getAll() {

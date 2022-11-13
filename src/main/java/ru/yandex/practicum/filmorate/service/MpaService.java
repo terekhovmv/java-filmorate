@@ -21,7 +21,7 @@ public class MpaService {
     }
 
     public Mpa getById(short id) {
-        return storage.getById(id).orElseThrow(() -> new MpaNotFoundException(id));
+        return storage.require(id);
     }
 
     public List<Mpa> getAll() {

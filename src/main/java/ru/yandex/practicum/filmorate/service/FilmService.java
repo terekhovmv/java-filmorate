@@ -3,10 +3,6 @@ package ru.yandex.practicum.filmorate.service;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
-import ru.yandex.practicum.filmorate.exceptions.FilmNotFoundException;
-import ru.yandex.practicum.filmorate.exceptions.GenreNotFoundException;
-import ru.yandex.practicum.filmorate.exceptions.MpaNotFoundException;
-import ru.yandex.practicum.filmorate.exceptions.UserNotFoundException;
 import ru.yandex.practicum.filmorate.model.*;
 import ru.yandex.practicum.filmorate.storage.*;
 
@@ -44,7 +40,7 @@ public class FilmService {
     }
 
     public Film getById(int id) {
-        return requireFilm(id);
+        return filmStorage.require(id);
     }
 
     public List<Film> getAll() {
@@ -53,9 +49,9 @@ public class FilmService {
 
     public Film create(Film archetype) {
         Film corrected = correctFilmIfNeeded(archetype);
-        requireMpa(corrected.getMpa().getId());
+        mpaStorage.requireContains(corrected.getMpa().getId());
         for(Genre genre: corrected.getGenres()) {
-            requireGenre(genre.getId());
+            genreStorage.requireContains(genre.getId());
         }
 
         Film created = filmStorage.create(corrected).orElseThrow(
@@ -67,10 +63,10 @@ public class FilmService {
     public Film update(Film from) {
         Film corrected = correctFilmIfNeeded(from);
 
-        requireFilm(corrected.getId());
-        requireMpa(corrected.getMpa().getId());
+        filmStorage.requireContains(corrected.getId());
+        mpaStorage.requireContains(corrected.getMpa().getId());
         for(Genre genre: corrected.getGenres()) {
-            requireGenre(genre.getId());
+            genreStorage.requireContains(genre.getId());
         }
 
         Film updated = filmStorage.update(corrected).orElseThrow(
@@ -80,8 +76,8 @@ public class FilmService {
     }
 
     public void addLike(int filmId, long userId) {
-        requireFilm(filmId);
-        requireUser(userId);
+        filmStorage.requireContains(filmId);
+        userStorage.requireContains(userId);
 
         if (likesStorage.addLike(filmId, userId)) {
             log.info("Film {} was successfully liked by user {}", filmId, userId);
@@ -91,8 +87,8 @@ public class FilmService {
     }
 
     public void deleteLike(int filmId, long userId) {
-        requireFilm(filmId);
-        requireUser(userId);
+        filmStorage.requireContains(filmId);
+        userStorage.requireContains(userId);
 
         if (likesStorage.deleteLike(filmId, userId)) {
             log.info("Film {} was successfully unliked by user {}", filmId, userId);
@@ -103,22 +99,6 @@ public class FilmService {
 
     public List<Film> getPopular(int count) {
         return filmStorage.getPopular(count);
-    }
-
-    private User requireUser(long id) {
-        return userStorage.getById(id).orElseThrow(() -> new UserNotFoundException(id));
-    }
-
-    private Film requireFilm(int id) {
-        return filmStorage.getById(id).orElseThrow(() -> new FilmNotFoundException(id));
-    }
-
-    private Mpa requireMpa(short id) {
-        return mpaStorage.getById(id).orElseThrow(() -> new MpaNotFoundException(id));
-    }
-
-    private Genre requireGenre(short id) {
-        return genreStorage.getById(id).orElseThrow(() -> new GenreNotFoundException(id));
     }
 
     private Film correctFilmIfNeeded(Film item) {

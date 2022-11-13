@@ -66,7 +66,7 @@ public class InMemoryFriendshipStorage implements FriendshipStorage {
         return ids
                 .stream()
                 .map((id) -> userStorage
-                        .getById(id)
+                        .get(id)
                         .orElse(null));
     }
 }

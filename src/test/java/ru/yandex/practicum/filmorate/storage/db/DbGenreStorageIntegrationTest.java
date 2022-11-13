@@ -24,7 +24,7 @@ public class DbGenreStorageIntegrationTest {
     @Test
     public void testGetByKnownId() {
         for (var wellKnownItem: wellKnownItems) {
-            assertThat(testee.getById(wellKnownItem.getId()))
+            assertThat(testee.get(wellKnownItem.getId()))
                     .isPresent()
                     .hasValueSatisfying(found -> assertThat(found)
                             .hasFieldOrPropertyWithValue("id",wellKnownItem.getId())
@@ -36,7 +36,7 @@ public class DbGenreStorageIntegrationTest {
 
     @Test
     public void testGetByUnknownId() {
-        assertThat(testee.getById((short)777)).isEmpty();
+        assertThat(testee.get((short)777)).isEmpty();
     }
 
     @Test

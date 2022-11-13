@@ -33,7 +33,12 @@ public class InMemoryFilmStorage implements FilmStorage {
     }
 
     @Override
-    public Optional<Film> getById(int id) {
+    public boolean contains(int id) {
+        return storage.containsKey(id);
+    }
+
+    @Override
+    public Optional<Film> get(int id) {
         Film item = storage.get(id);
         if (item == null) {
             return Optional.empty();
@@ -85,10 +90,10 @@ public class InMemoryFilmStorage implements FilmStorage {
     private Film addCalculatedData(Film film) {
         return film.toBuilder()
                 .mpa(mpaStorage
-                        .getById(film.getMpa().getId())
+                        .get(film.getMpa().getId())
                         .orElse(null))
                 .genres(film.getGenres().stream()
-                        .map((genreLight)->genreStorage.getById(genreLight.getId()).orElse(null))
+                        .map((genreLight)->genreStorage.get(genreLight.getId()).orElse(null))
                         .collect(Collectors.toList()))
                 .rate(likesStorage.getLikesCount(film.getId()))
                 .build();
