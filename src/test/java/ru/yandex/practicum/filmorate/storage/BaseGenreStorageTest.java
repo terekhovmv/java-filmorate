@@ -7,14 +7,14 @@ import ru.yandex.practicum.filmorate.model.Genre;
 import static org.assertj.core.api.Assertions.*;
 
 public abstract class BaseGenreStorageTest {
-    protected abstract GenreStorage getTestee();
-
     private static final Genre[] WELL_KNOWN = {
             new Genre((short) 1, "Комедия"),
             new Genre((short) 3, "Мультфильм"),
             new Genre((short) 5, "Приключения")
     };
     private static final short UNKNOWN_ID = 777;
+
+    protected abstract GenreStorage getTestee();
 
     @Test
     public void testContainsByKnownId() {

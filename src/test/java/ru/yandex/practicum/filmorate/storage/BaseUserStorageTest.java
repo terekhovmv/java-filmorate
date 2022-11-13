@@ -7,10 +7,10 @@ import ru.yandex.practicum.filmorate.model.User;
 import static org.assertj.core.api.Assertions.*;
 
 public abstract class BaseUserStorageTest {
-    protected abstract UserStorage getTestee();
     private UserStorageTestHelper testeeHelper;
-
     private static final int INITIAL_COUNT = 10;
+
+    protected abstract UserStorage getTestee();
 
     protected void beforeEach() {
         testeeHelper = new UserStorageTestHelper(getTestee());

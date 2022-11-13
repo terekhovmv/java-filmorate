@@ -79,22 +79,15 @@ public class FilmService {
         filmStorage.requireContains(filmId);
         userStorage.requireContains(userId);
 
-        if (likesStorage.addLike(filmId, userId)) {
-            log.info("Film {} was successfully liked by user {}", filmId, userId);
-        } else {
-            log.info("Film {} is already liked by user {}", filmId, userId);
-        }
+        likesStorage.addLike(filmId, userId);
     }
 
     public void deleteLike(int filmId, long userId) {
         filmStorage.requireContains(filmId);
         userStorage.requireContains(userId);
 
-        if (likesStorage.deleteLike(filmId, userId)) {
-            log.info("Film {} was successfully unliked by user {}", filmId, userId);
-        } else {
-            log.info("Unable to unlike the film {}, it is not liked by user {}", filmId, userId);
-        }
+        likesStorage.deleteLike(filmId, userId);
+        log.info("Film {} was successfully unliked by user {}", filmId, userId);
     }
 
     public List<Film> getPopular(int count) {

@@ -8,14 +8,14 @@ import static org.assertj.core.api.Assertions.*;
 
 
 public abstract class BaseMpaStorageTest {
-    protected abstract MpaStorage getTestee();
-
     private static final Mpa[] WELL_KNOWN = {
             new Mpa((short)1, "G"),
             new Mpa((short)3, "PG-13"),
             new Mpa((short)5, "NC-17")
     };
     private static final short UNKNOWN_ID = 777;
+
+    protected abstract MpaStorage getTestee();
 
     @Test
     public void testContainsByKnownId() {

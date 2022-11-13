@@ -18,22 +18,20 @@ public class DbLikesStorage implements LikesStorage {
     }
 
     @Override
-    public boolean addLike(int filmId, long userId) {
-        int rowsAffected = jdbcTemplate.update(
+    public void addLike(int filmId, long userId) {
+        jdbcTemplate.update(
             "MERGE INTO likes (film_id, user_id) KEY(film_id, user_id) VALUES (?, ?);",
                 filmId,
                 userId
         );
-        return rowsAffected > 0;
     }
 
     @Override
-    public boolean deleteLike(int filmId, long userId) {
-        int rowsAffected = jdbcTemplate.update(
+    public void deleteLike(int filmId, long userId) {
+        jdbcTemplate.update(
                 "DELETE FROM likes WHERE film_id=? AND user_id=?;",
                 filmId,
                 userId
         );
-        return rowsAffected > 0;
     }
 }

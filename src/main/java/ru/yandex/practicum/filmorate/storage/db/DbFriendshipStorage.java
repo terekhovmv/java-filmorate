@@ -22,23 +22,21 @@ public class DbFriendshipStorage implements FriendshipStorage {
     }
 
     @Override
-    public boolean addFriend(long id, long friendId) {
-        int rowsAffected = jdbcTemplate.update(
+    public void addFriend(long id, long friendId) {
+        jdbcTemplate.update(
                 "MERGE INTO friendship (user_id, friend_id) KEY(user_id, friend_id) VALUES (?, ?);",
                 id,
                 friendId
         );
-        return rowsAffected > 0;
     }
 
     @Override
-    public boolean deleteFriend(long id, long friendId) {
-        int rowsAffected = jdbcTemplate.update(
+    public void deleteFriend(long id, long friendId) {
+        jdbcTemplate.update(
                 "DELETE FROM friendship WHERE user_id=? AND friend_id=?;",
                 id,
                 friendId
         );
-        return rowsAffected > 0;
     }
 
     @Override

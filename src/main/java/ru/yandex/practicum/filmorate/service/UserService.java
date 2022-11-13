@@ -57,22 +57,16 @@ public class UserService {
         userStorage.requireContains(id);
         userStorage.requireContains(friendId);
 
-        if (friendshipStorage.addFriend(id, friendId)) {
-            log.info("User {} was successfully set as friend for {}", friendId, id);
-        } else {
-            log.info("User {} is already friend for {}", friendId, id);
-        }
+        friendshipStorage.addFriend(id, friendId);
+        log.info("User {} was successfully set as friend for {}", friendId, id);
     }
 
     public void deleteFriend(long id, long friendId) {
         userStorage.requireContains(id);
         userStorage.requireContains(friendId);
 
-        if (friendshipStorage.deleteFriend(id, friendId)) {
-            log.info("User {} was successfully unfriended for {}", friendId, id);
-        } else {
-            log.info("Unable to unfriend the user {} for {}, since they are not friends", friendId, id);
-        }
+        friendshipStorage.deleteFriend(id, friendId);
+        log.info("User {} was successfully unfriended for {}", friendId, id);
     }
 
     public List<User> getFriends(long id) {
