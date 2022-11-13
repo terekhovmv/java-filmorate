@@ -8,7 +8,6 @@ import ru.yandex.practicum.filmorate.storage.DefaultStorageConsts;
 import ru.yandex.practicum.filmorate.storage.GenreStorage;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 public class GenreService {

@@ -127,7 +127,7 @@ public class FilmService {
             return item.toBuilder().genres(new ArrayList<>()).build();
         }
         Set<Short> uniqueGenreIds = new HashSet<>();
-        List<Genre> uniqueGenres = new ArrayList();
+        List<Genre> uniqueGenres = new ArrayList<>();
         for(Genre genre: itemGenres) {
             if (genre != null && !uniqueGenreIds.contains(genre.getId())) {
                 uniqueGenreIds.add(genre.getId());
