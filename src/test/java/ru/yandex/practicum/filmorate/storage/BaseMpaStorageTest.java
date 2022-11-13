@@ -1,20 +1,14 @@
-package ru.yandex.practicum.filmorate.storage.db;
+package ru.yandex.practicum.filmorate.storage;
 
-import lombok.RequiredArgsConstructor;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
-import org.springframework.boot.test.context.SpringBootTest;
 import ru.yandex.practicum.filmorate.model.Mpa;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 
-@SpringBootTest
-@AutoConfigureTestDatabase
-@RequiredArgsConstructor(onConstructor_ = @Autowired)
-public class DbMpaStorageIntegrationTest {
-    private final DbMpaStorage testee;
+public abstract class BaseMpaStorageTest {
+    protected abstract MpaStorage getTestee();
+
     private static final Mpa[] WELL_KNOWN = {
             new Mpa((short)1, "G"),
             new Mpa((short)3, "PG-13"),
@@ -25,19 +19,19 @@ public class DbMpaStorageIntegrationTest {
     @Test
     public void testContainsByKnownId() {
         for (var wellKnownItem: WELL_KNOWN) {
-            assertThat(testee.contains(wellKnownItem.getId())).isTrue();
+            assertThat(getTestee().contains(wellKnownItem.getId())).isTrue();
         }
     }
 
     @Test
     public void testContainsByUnknownId() {
-        assertThat(testee.contains(UNKNOWN_ID)).isFalse();
+        assertThat(getTestee().contains(UNKNOWN_ID)).isFalse();
     }
 
     @Test
     public void testGetByKnownId() {
         for (var wellKnownItem: WELL_KNOWN) {
-            assertThat(testee.get(wellKnownItem.getId()))
+            assertThat(getTestee().get(wellKnownItem.getId()))
                     .isPresent()
                     .hasValueSatisfying(found -> assertThat(found)
                             .hasFieldOrPropertyWithValue("id",wellKnownItem.getId())
@@ -49,12 +43,12 @@ public class DbMpaStorageIntegrationTest {
 
     @Test
     public void testGetByUnknownId() {
-        assertThat(testee.get((short)777)).isEmpty();
+        assertThat(getTestee().get((short)777)).isEmpty();
     }
 
     @Test
     public void testGetAll() {
-        var result = testee.getAll();
+        var result = getTestee().getAll();
         assertThat(result)
                 .hasSizeGreaterThan(0)
                 .contains(WELL_KNOWN);

@@ -1,30 +1,19 @@
-package ru.yandex.practicum.filmorate.storage.db;
+package ru.yandex.practicum.filmorate.storage;
 
-import lombok.RequiredArgsConstructor;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.annotation.DirtiesContext;
 import ru.yandex.practicum.filmorate.model.User;
 
 import java.time.LocalDate;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-
-@SpringBootTest
-@DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
-@AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.ANY)
-@RequiredArgsConstructor(onConstructor_ = @Autowired)
-public class DbUserStorageIntegrationTest {
-    private final DbUserStorage testee;
+public abstract class BaseUserStorageTest {
+    protected abstract UserStorage getTestee();
 
     private static final short INITIAL_COUNT = 10;
 
-    @BeforeEach
-    void beforeEach() {
+    protected void beforeEach() {
         for (int idx = 1; idx <= INITIAL_COUNT; idx++) {
             addUser(idx);
         }
@@ -33,13 +22,13 @@ public class DbUserStorageIntegrationTest {
     @Test
     public void testContainsByKnownId() {
         for (long id = 1; id <= INITIAL_COUNT; id++) {
-            assertThat(testee.contains(id)).isTrue();
+            assertThat(getTestee().contains(id)).isTrue();
         }
     }
 
     @Test
     public void testContainsByUnknownId() {
-        assertThat(testee.contains(INITIAL_COUNT + 1)).isFalse();
+        assertThat(getTestee().contains(INITIAL_COUNT + 1)).isFalse();
     }
 
     @Test
@@ -47,7 +36,7 @@ public class DbUserStorageIntegrationTest {
         for (int idx = 1; idx <= INITIAL_COUNT; idx++) {
             final long id = idx;
             User expected = getExpectedUser(id, idx);
-            assertThat(testee.get(id))
+            assertThat(getTestee().get(id))
                     .isPresent()
                     .hasValueSatisfying(found -> assertThat(found)
                             .isEqualTo(expected));
@@ -57,11 +46,11 @@ public class DbUserStorageIntegrationTest {
 
     @Test
     public void testGetByUnknownId() {
-        assertThat(testee.get(INITIAL_COUNT + 1)).isEmpty();
+        assertThat(getTestee().get(INITIAL_COUNT + 1)).isEmpty();
     }
 
     void addUser(int idx) {
-        testee.create(User.builder()
+        getTestee().create(User.builder()
                 .email(createUserEmail(idx))
                 .login(createUserLogin(idx))
                 .name(createUserName(idx))
