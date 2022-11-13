@@ -79,6 +79,10 @@ public class DbUserStorage implements UserStorage {
 
     @Override
     public Optional<User> update(User from) {
+        if (!contains(from.getId())) {
+            return Optional.empty();
+        }
+
         jdbcTemplate.update(
                 "UPDATE users SET email=?, login=?, name=?, birthday=? WHERE id=?;",
                 from.getEmail(),

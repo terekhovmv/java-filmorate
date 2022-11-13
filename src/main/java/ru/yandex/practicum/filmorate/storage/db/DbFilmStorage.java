@@ -76,7 +76,7 @@ public class DbFilmStorage implements FilmStorage {
                 "FROM films as f \n" +
                 "LEFT JOIN likes AS l ON l.film_id=f.id \n" +
                 "GROUP by f.id \n" +
-                "ORDER BY rate DESC \n" +
+                "ORDER BY rate DESC, f.id DESC \n" +
                 "LIMIT ?; \n",
                 this::buildFilm,
                 count
@@ -121,6 +121,10 @@ public class DbFilmStorage implements FilmStorage {
     @Override
     public Optional<Film> update(Film from) {
         int filmId = from.getId();
+        if (!contains(filmId)) {
+            return Optional.empty();
+        }
+
         jdbcTemplate.update(
                 "UPDATE films SET name=?, description=?, release_date=?, duration=?, mpa_id=? WHERE id=?;",
                 from.getName(),

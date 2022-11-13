@@ -66,12 +66,21 @@ public class FilmStorageTestHelper {
     }
 
     public Film getExpectedFilmNoRate(int id) {
-        return getExpectedFilm(id, id, createFilmMpaId(id), createFilmGenreIds(id), null);
+        return getExpectedFilmNoRate(id, id);
     }
 
-    public Film getExpectedFilm(int id, int rate) {
-        return getExpectedFilm(id, id, createFilmMpaId(id), createFilmGenreIds(id), rate);
+    public Film getExpectedFilmNoRate(int id, int userFriendlyIdx) {
+        return getExpectedFilm(id, userFriendlyIdx, createFilmMpaId(userFriendlyIdx), createFilmGenreIds(userFriendlyIdx), null);
     }
+
+    public Film getExpectedFilmWithRate(int id, int rate) {
+        return getExpectedFilmWithRate(id, id, rate);
+    }
+
+    public Film getExpectedFilmWithRate(int id, int userFriendlyIdx, int rate) {
+        return getExpectedFilm(id, userFriendlyIdx, createFilmMpaId(userFriendlyIdx), createFilmGenreIds(userFriendlyIdx), rate);
+    }
+
 
     private String createFilmName(int userFriendlyIdx) {
         return userFriendlyIdx + "name";

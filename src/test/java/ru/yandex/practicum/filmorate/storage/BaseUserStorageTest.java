@@ -78,7 +78,7 @@ public abstract class BaseUserStorageTest {
 
     @Test
     public void testCreate() {
-        var expected = testeeHelper.getExpectedUser(INITIAL_COUNT+1);
+        var expected = testeeHelper.getExpectedUser(INITIAL_COUNT + 1);
         var archetype = expected.toBuilder().id(null).build();
 
         assertThat(getTestee().create(archetype))
@@ -89,7 +89,7 @@ public abstract class BaseUserStorageTest {
 
     @Test
     public void testUpdate() {
-        var from = testeeHelper.getExpectedUser(INITIAL_COUNT, INITIAL_COUNT+1);
+        var from = testeeHelper.getExpectedUser(INITIAL_COUNT, INITIAL_COUNT + 1);
 
         assertThat(getTestee().update(from))
                 .isPresent()
@@ -99,7 +99,7 @@ public abstract class BaseUserStorageTest {
 
     @Test
     public void testUpdateByUnknownId() {
-        var from = testeeHelper.getExpectedUser(INITIAL_COUNT+1);
+        var from = testeeHelper.getExpectedUser(INITIAL_COUNT + 1);
 
         assertThat(getTestee().update(from)).isEmpty();
     }

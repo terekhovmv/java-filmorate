@@ -60,10 +60,19 @@ public class InMemoryFilmStorage implements FilmStorage {
     public List<Film> getPopular(int count) {
         return storage.values()
                 .stream()
-                .sorted((a,b) -> Integer.compare(
-                        likesStorage.getLikesCount(b.getId()),
-                        likesStorage.getLikesCount(a.getId()))
-                )
+                .sorted((a,b) -> {
+                    int res = Integer.compare(
+                            likesStorage.getLikesCount(b.getId()),
+                            likesStorage.getLikesCount(a.getId())
+                    );
+                    if (res == 0) {
+                        res = Integer.compare(
+                                b.getId(),
+                                a.getId()
+                        );
+                    }
+                    return res;
+                })
                 .limit(count)
                 .map(this::addCalculatedData)
                 .collect(Collectors.toList());
