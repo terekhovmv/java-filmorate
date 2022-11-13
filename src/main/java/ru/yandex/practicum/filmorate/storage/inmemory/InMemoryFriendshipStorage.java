@@ -23,6 +23,15 @@ public class InMemoryFriendshipStorage implements FriendshipStorage {
     }
 
     @Override
+    public boolean contains(long id, long friendId) {
+        Set<Long> friends = storage.get(id);
+        if (friends == null) {
+            return false;
+        }
+        return friends.contains(friendId);
+    }
+
+    @Override
     public void addFriend(long id, long friendId) {
         storage.putIfAbsent(id, new HashSet<>());
         storage.get(id).add(friendId);

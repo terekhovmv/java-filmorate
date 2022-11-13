@@ -3,6 +3,7 @@ package ru.yandex.practicum.filmorate.storage.db;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
+import org.springframework.jdbc.support.rowset.SqlRowSet;
 import org.springframework.stereotype.Component;
 
 import ru.yandex.practicum.filmorate.model.User;
@@ -19,6 +20,16 @@ public class DbFriendshipStorage implements FriendshipStorage {
     public DbFriendshipStorage(JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
         this.rowMapper = new DbUserRowMapper();
+    }
+
+    @Override
+    public boolean contains(long id, long friendId) {
+        SqlRowSet result = jdbcTemplate.queryForRowSet(
+                "SELECT * FROM friendship WHERE user_id=? AND friend_id=?;",
+                id,
+                friendId
+        );
+        return result.next();
     }
 
     @Override
