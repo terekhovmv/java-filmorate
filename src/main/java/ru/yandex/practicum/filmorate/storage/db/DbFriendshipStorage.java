@@ -9,7 +9,7 @@ import org.springframework.stereotype.Component;
 import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.storage.FriendshipStorage;
 
-import java.util.stream.Stream;
+import java.util.List;
 
 @Component
 @Qualifier(DbStorageConsts.QUALIFIER)
@@ -51,7 +51,7 @@ public class DbFriendshipStorage implements FriendshipStorage {
     }
 
     @Override
-    public Stream<User> getFriends(long id) {
+    public List<User> getFriends(long id) {
         final String query =
                 "SELECT users.* \n" +
                 "FROM users RIGHT JOIN ( \n" +
@@ -62,11 +62,11 @@ public class DbFriendshipStorage implements FriendshipStorage {
                 query,
                 this.rowMapper,
                 id
-        ).stream();
+        );
     }
 
     @Override
-    public Stream<User> getCommonFriends(long id, long otherUserId) {
+    public List<User> getCommonFriends(long id, long otherUserId) {
         final String query =
                 "SELECT users.* \n" +
                 "FROM users RIGHT JOIN ( \n" +
@@ -80,6 +80,6 @@ public class DbFriendshipStorage implements FriendshipStorage {
                 this.rowMapper,
                 id,
                 otherUserId
-        ).stream();
+        );
     }
 }

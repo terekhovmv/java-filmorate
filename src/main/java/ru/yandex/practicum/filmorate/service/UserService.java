@@ -9,7 +9,6 @@ import ru.yandex.practicum.filmorate.storage.FriendshipStorage;
 import ru.yandex.practicum.filmorate.storage.UserStorage;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -72,14 +71,14 @@ public class UserService {
     public List<User> getFriends(long id) {
         userStorage.requireContains(id);
 
-        return friendshipStorage.getFriends(id).collect(Collectors.toList());
+        return friendshipStorage.getFriends(id);
     }
 
     public List<User> getCommonFriends(long id, long otherId) {
         userStorage.requireContains(id);
         userStorage.requireContains(otherId);
 
-        return friendshipStorage.getCommonFriends(id, otherId).collect(Collectors.toList());
+        return friendshipStorage.getCommonFriends(id, otherId);
     }
 
     private User correctUserIfNeeded(User item) {
