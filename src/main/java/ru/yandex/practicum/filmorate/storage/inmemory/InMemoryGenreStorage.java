@@ -39,6 +39,6 @@ public class InMemoryGenreStorage implements GenreStorage {
     }
 
     private void add(int id, String name) {
-        storage.put((short)id, Genre.builder().id((short)id).name(name).build());
+        storage.put((short)id, new Genre((short)id, name));
     }
 }

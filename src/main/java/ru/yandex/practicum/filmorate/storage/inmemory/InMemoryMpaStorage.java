@@ -2,6 +2,7 @@ package ru.yandex.practicum.filmorate.storage.inmemory;
 
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
+import ru.yandex.practicum.filmorate.model.Genre;
 import ru.yandex.practicum.filmorate.model.Mpa;
 import ru.yandex.practicum.filmorate.storage.MpaStorage;
 
@@ -36,9 +37,6 @@ public class InMemoryMpaStorage implements MpaStorage {
     }
 
     private void add(int id, String name) {
-        storage.put(
-                (short)id,
-                Mpa.builder().id((short)id).name(name).build()
-        );
+        storage.put((short)id, new Mpa((short)id, name));
     }
 }

@@ -4,11 +4,7 @@ import lombok.*;
 
 import javax.validation.constraints.NotNull;
 
-@Getter
-@Setter
-@NoArgsConstructor
-@AllArgsConstructor
-@Builder(toBuilder = true)
+@Value
 public class Mpa {
     @NotNull
     Short id;

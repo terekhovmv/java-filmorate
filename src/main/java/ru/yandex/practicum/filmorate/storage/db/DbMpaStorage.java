@@ -42,9 +42,9 @@ public class DbMpaStorage implements MpaStorage {
     }
 
     private Mpa buildMpa(ResultSet rs, int rowNum) throws SQLException {
-        return Mpa.builder()
-                .id(rs.getShort("id"))
-                .name(rs.getString("name"))
-                .build();
+        return new Mpa(
+                rs.getShort("id"),
+                rs.getString("name")
+        );
     }
 }
