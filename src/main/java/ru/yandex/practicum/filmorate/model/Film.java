@@ -15,7 +15,7 @@ import java.util.List;
 @Value
 @Builder(toBuilder = true)
 public class Film {
-    int id;
+    Integer id;
     @NotBlank
     String name;
     @Size(max = 200)
