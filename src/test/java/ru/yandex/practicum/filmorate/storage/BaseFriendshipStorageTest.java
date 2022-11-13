@@ -22,13 +22,13 @@ public abstract class BaseFriendshipStorageTest {
     void testAddFriend() {
         var testee = getTestee();
 
-        final int id = 1;
-        final int friendId = 2;
+        final int ann = 1;
+        final int bob = 2;
 
-        assertThat(testee.contains(id, friendId)).isFalse();
+        assertThat(testee.contains(ann, bob)).isFalse();
 
-        testee.addFriend(id, friendId);
-        assertThat(testee.contains(id, friendId)).isTrue();
+        testee.addFriend(ann, bob);
+        assertThat(testee.contains(ann, bob)).isTrue();
     }
 
     @Test
