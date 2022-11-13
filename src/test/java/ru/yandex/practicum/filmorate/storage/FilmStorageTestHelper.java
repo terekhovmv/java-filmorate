@@ -33,60 +33,60 @@ public class FilmStorageTestHelper {
         this.genreStorage = null;
     }
 
-    public void addFilm(int idx, short mpaId, List<Short> genreIds) {
+    public void addFilm(int userFriendlyIdx, short mpaId, List<Short> genreIds) {
         storage.create(Film.builder()
-                .name(createFilmName(idx))
-                .description(createFilmDescription(idx))
-                .releaseDate(createFilmReleaseDate(idx))
-                .duration(createFilmDuration(idx))
+                .name(createFilmName(userFriendlyIdx))
+                .description(createFilmDescription(userFriendlyIdx))
+                .releaseDate(createFilmReleaseDate(userFriendlyIdx))
+                .duration(createFilmDuration(userFriendlyIdx))
                 .mpa(createFilmMpaLight(mpaId))
                 .genres(createFilmGenresLight(genreIds))
                 .build()
         );
     }
 
-    public void addFilm(int idx) {
-        addFilm(idx, mpaIdForIdx(idx), genreIdsForIdx(idx));
+    public void addFilm(int userFriendlyIdx) {
+        addFilm(userFriendlyIdx, createFilmMpaId(userFriendlyIdx), createFilmGenreIds(userFriendlyIdx));
     }
 
-    public Film getExpectedFilmNoRate(int idx, short mpaId, List<Short> genreIds, Integer rate) {
+    public Film getExpectedFilm(int id, int userFriendlyIdx, short mpaId, List<Short> genreIds, Integer rate) {
         Objects.requireNonNull(mpaStorage);
         Objects.requireNonNull(genreStorage);
 
         return Film.builder()
-                .id(idx)
-                .name(createFilmName(idx))
-                .description(createFilmDescription(idx))
-                .releaseDate(createFilmReleaseDate(idx))
-                .duration(createFilmDuration(idx))
+                .id(id)
+                .name(createFilmName(userFriendlyIdx))
+                .description(createFilmDescription(userFriendlyIdx))
+                .releaseDate(createFilmReleaseDate(userFriendlyIdx))
+                .duration(createFilmDuration(userFriendlyIdx))
                 .mpa(getFilmMpa(mpaId))
                 .genres(getFilmGenres(genreIds))
                 .rate(rate)
                 .build();
     }
 
-    public Film getExpectedFilmNoRate(int idx) {
-        return getExpectedFilmNoRate(idx, mpaIdForIdx(idx), genreIdsForIdx(idx), null);
+    public Film getExpectedFilmNoRate(int id) {
+        return getExpectedFilm(id, id, createFilmMpaId(id), createFilmGenreIds(id), null);
     }
 
-    public Film getExpectedFilm(int idx, int rate) {
-        return getExpectedFilmNoRate(idx, mpaIdForIdx(idx), genreIdsForIdx(idx), rate);
+    public Film getExpectedFilm(int id, int rate) {
+        return getExpectedFilm(id, id, createFilmMpaId(id), createFilmGenreIds(id), rate);
     }
 
-    private String createFilmName(int idx) {
-        return idx + "name";
+    private String createFilmName(int userFriendlyIdx) {
+        return userFriendlyIdx + "name";
     }
 
-    private String createFilmDescription(int idx) {
-        return idx + "description";
+    private String createFilmDescription(int userFriendlyIdx) {
+        return userFriendlyIdx + "description";
     }
 
-    private LocalDate createFilmReleaseDate(int idx) {
-        return LocalDate.of(1970, 1, idx);
+    private LocalDate createFilmReleaseDate(int userFriendlyIdx) {
+        return LocalDate.of(1970, 1, userFriendlyIdx);
     }
 
-    private int createFilmDuration(int idx) {
-        return 100 + idx;
+    private int createFilmDuration(int userFriendlyIdx) {
+        return 100 + userFriendlyIdx;
     }
 
     private Mpa createFilmMpaLight(short mpaId) {
@@ -113,11 +113,11 @@ public class FilmStorageTestHelper {
         return genreIds.stream().map(this::getFilmGenre).collect(Collectors.toList());
     }
 
-    private short mpaIdForIdx(int idx) {
-        return (short)(idx % 5 + 1);
+    private short createFilmMpaId(int userFriendlyIdx) {
+        return (short)(userFriendlyIdx % 5 + 1);
     }
 
-    private List<Short> genreIdsForIdx(int idx) {
-        return List.of((short)(idx % 5 + 1), (short)(idx % 5 + 2));
+    private List<Short> createFilmGenreIds(int userFriendlyIdx) {
+        return List.of((short)(userFriendlyIdx % 5 + 1), (short)(userFriendlyIdx % 5 + 2));
     }
 }

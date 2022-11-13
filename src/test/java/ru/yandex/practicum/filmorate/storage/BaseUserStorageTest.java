@@ -14,17 +14,18 @@ public abstract class BaseUserStorageTest {
 
     protected void beforeEach() {
         testeeHelper = new UserStorageTestHelper(getTestee());
-        for (int idx = 1; idx <= INITIAL_COUNT; idx++) {
-            testeeHelper.addUser(idx);
+        for (int id = 1; id <= INITIAL_COUNT; id++) {
+            testeeHelper.addUser(id);
         }
     }
 
     @Test
     public void testContainsByKnownId() {
-        for (int idx = 1; idx <= INITIAL_COUNT; idx++) {
-            final long id = idx;
+        for (int id = 1; id <= INITIAL_COUNT; id++) {
             assertThat(getTestee().contains(id)).isTrue();
-            assertThatCode(()->getTestee().requireContains(id))
+
+            final long finalId = id;
+            assertThatCode(()->getTestee().requireContains(finalId))
                     .doesNotThrowAnyException();
         }
     }
@@ -40,14 +41,15 @@ public abstract class BaseUserStorageTest {
 
     @Test
     public void testGetByKnownId() {
-        for (int idx = 1; idx <= INITIAL_COUNT; idx++) {
-            final long id = idx;
-            User expected = testeeHelper.getExpectedUser(idx);
+        for (int id = 1; id <= INITIAL_COUNT; id++) {
+            User expected = testeeHelper.getExpectedUser(id);
             assertThat(getTestee().get(id))
                     .isPresent()
                     .hasValueSatisfying(found -> assertThat(found)
                             .isEqualTo(expected));
-            assertThatCode(()->getTestee().requireContains(id))
+
+            final long finalId = id;
+            assertThatCode(()->getTestee().requireContains(finalId))
                     .doesNotThrowAnyException();
         }
     }
@@ -64,8 +66,8 @@ public abstract class BaseUserStorageTest {
     @Test
     public void testGetAll() {
         User[] expected = new User[INITIAL_COUNT];
-        for (int idx = 0; idx < INITIAL_COUNT; idx++) {
-            expected[idx] = testeeHelper.getExpectedUser(idx+1);
+        for (int id = 1; id <= INITIAL_COUNT; id++) {
+            expected[id-1] = testeeHelper.getExpectedUser(id);
         }
 
         var result = getTestee().getAll();

@@ -16,11 +16,11 @@ public abstract class BaseLikesStorageTest {
         FilmStorageTestHelper filmStorageHelper = new FilmStorageTestHelper(getFilmStorage());
         UserStorageTestHelper userStorageHelper = new UserStorageTestHelper(getUserStorage());
 
-        for (int idx = 1; idx <= INITIAL_FILM_COUNT; idx++) {
-            filmStorageHelper.addFilm(idx);
+        for (int id = 1; id <= INITIAL_FILM_COUNT; id++) {
+            filmStorageHelper.addFilm(id);
         }
-        for (int idx = 1; idx <= INITIAL_USER_COUNT; idx++) {
-            userStorageHelper.addUser(idx);
+        for (int id = 1; id <= INITIAL_USER_COUNT; id++) {
+            userStorageHelper.addUser(id);
         }
     }
 

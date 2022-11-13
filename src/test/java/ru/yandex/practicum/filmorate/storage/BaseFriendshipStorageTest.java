@@ -13,8 +13,8 @@ public abstract class BaseFriendshipStorageTest {
 
     protected void beforeEach() {
         userStorageHelper = new UserStorageTestHelper(getUserStorage());
-        for (int idx = 1; idx <= INITIAL_USER_COUNT; idx++) {
-            userStorageHelper.addUser(idx);
+        for (int id = 1; id <= INITIAL_USER_COUNT; id++) {
+            userStorageHelper.addUser(id);
         }
     }
 
