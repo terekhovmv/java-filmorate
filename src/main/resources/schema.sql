@@ -46,7 +46,7 @@ CREATE TABLE IF NOT EXISTS genres (
 );
 
 CREATE TABLE IF NOT EXISTS film_genres (
-    film_id       int         NOT NULL REFERENCES users (id),
+    film_id       int         NOT NULL REFERENCES films (id),
     genre_id      smallint    NOT NULL REFERENCES genres (id),
 
     CONSTRAINT pk_film_genre PRIMARY KEY (
@@ -54,15 +54,3 @@ CREATE TABLE IF NOT EXISTS film_genres (
         genre_id
     )
 );
-
-DELETE FROM film_genres;
-DELETE FROM likes;
-DELETE FROM films;
-DELETE FROM friendship;
-DELETE FROM users;
-
-ALTER TABLE users
-    ALTER COLUMN id RESTART WITH 1;
-
-ALTER TABLE films
-    ALTER COLUMN id RESTART WITH 1;
