@@ -81,6 +81,36 @@ public abstract class BaseFriendshipStorageTest {
     }
 
     @Test
+    void testGetCommonFriendsFirstDoesNotHaveFriends() {
+        var testee = getTestee();
+
+        final int ann = 1;
+        final int bob = 2;
+        final int calvin = 3;
+        final int dionis = 4;
+
+        testee.addFriend(bob, calvin);
+        testee.addFriend(bob, dionis);
+
+        assertThat(testee.getCommonFriends(ann, bob)).isEmpty();
+    }
+
+    @Test
+    void testGetCommonFriendsSecondDoesNotHaveFriends() {
+        var testee = getTestee();
+
+        final int ann = 1;
+        final int bob = 2;
+        final int calvin = 3;
+        final int dionis = 4;
+
+        testee.addFriend(ann, calvin);
+        testee.addFriend(ann, dionis);
+
+        assertThat(testee.getCommonFriends(ann, bob)).isEmpty();
+    }
+
+    @Test
     void testGetCommonFriends() {
         var testee = getTestee();
 

@@ -77,7 +77,7 @@ public class InMemoryFriendshipStorage implements FriendshipStorage {
                 .map((id) -> userStorage
                         .get(id)
                         .orElse(null))
-                .filter(user -> user != null)
+                .filter(Objects::nonNull)
                 .collect(Collectors.toList());
     }
 }
