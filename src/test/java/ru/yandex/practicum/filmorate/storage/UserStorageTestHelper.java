@@ -31,6 +31,10 @@ public class UserStorageTestHelper {
                 .build();
     }
 
+    public User getExpectedUser(int idx) {
+        return getExpectedUser(idx, idx);
+    }
+
     private String createUserEmail(int idx) {
         return idx + "@mail.com";
     }
