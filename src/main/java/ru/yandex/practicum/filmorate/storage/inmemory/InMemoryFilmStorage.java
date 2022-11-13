@@ -6,6 +6,7 @@ import org.springframework.stereotype.Component;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.storage.FilmStorage;
 import ru.yandex.practicum.filmorate.storage.GenreStorage;
+import ru.yandex.practicum.filmorate.storage.LikesStorage;
 import ru.yandex.practicum.filmorate.storage.MpaStorage;
 
 import java.util.*;
@@ -14,14 +15,15 @@ import java.util.stream.Collectors;
 @Component
 @Qualifier(InMemoryStorageConsts.QUALIFIER)
 public class InMemoryFilmStorage implements FilmStorage {
-    private final InMemoryLikesStorage likesStorage;
+    private final LikesStorage likesStorage;
     private final MpaStorage mpaStorage;
     private final GenreStorage genreStorage;
     private final Map<Integer, Film> storage = new HashMap<>();
     private int lastId = 0;
 
     public InMemoryFilmStorage(
-        InMemoryLikesStorage likesStorage,
+        @Qualifier(InMemoryStorageConsts.QUALIFIER)
+        LikesStorage likesStorage,
         @Qualifier(InMemoryStorageConsts.QUALIFIER)
         MpaStorage mpaStorage,
         @Qualifier(InMemoryStorageConsts.QUALIFIER)

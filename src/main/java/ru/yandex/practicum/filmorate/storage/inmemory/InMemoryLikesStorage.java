@@ -38,6 +38,7 @@ public class InMemoryLikesStorage implements LikesStorage {
         }
     }
 
+    @Override
     public int getLikesCount(int filmId) {
         Set<Long> likes = storage.get(filmId);
         return (likes == null) ? 0 : likes.size();

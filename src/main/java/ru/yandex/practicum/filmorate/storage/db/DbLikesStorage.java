@@ -46,4 +46,14 @@ public class DbLikesStorage implements LikesStorage {
                 userId
         );
     }
+
+    @Override
+    public int getLikesCount(int filmId) {
+        Integer count = jdbcTemplate.queryForObject(
+                "SELECT COUNT(*) FROM likes WHERE film_id=?;",
+                Integer.class,
+                filmId
+        );
+        return (count != null) ? count : 0;
+    }
 }
