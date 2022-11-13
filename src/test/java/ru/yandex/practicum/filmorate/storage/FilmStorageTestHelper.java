@@ -49,7 +49,7 @@ public class FilmStorageTestHelper {
         addFilm(idx, mpaIdForIdx(idx), genreIdsForIdx(idx));
     }
 
-    public Film getExpectedFilmNoRate(int idx, short mpaId, List<Short> genreIds) {
+    public Film getExpectedFilmNoRate(int idx, short mpaId, List<Short> genreIds, Integer rate) {
         Objects.requireNonNull(mpaStorage);
         Objects.requireNonNull(genreStorage);
 
@@ -61,12 +61,16 @@ public class FilmStorageTestHelper {
                 .duration(createFilmDuration(idx))
                 .mpa(getFilmMpa(mpaId))
                 .genres(getFilmGenres(genreIds))
-                .rate(null)
+                .rate(rate)
                 .build();
     }
 
     public Film getExpectedFilmNoRate(int idx) {
-        return getExpectedFilmNoRate(idx, mpaIdForIdx(idx), genreIdsForIdx(idx));
+        return getExpectedFilmNoRate(idx, mpaIdForIdx(idx), genreIdsForIdx(idx), null);
+    }
+
+    public Film getExpectedFilm(int idx, int rate) {
+        return getExpectedFilmNoRate(idx, mpaIdForIdx(idx), genreIdsForIdx(idx), rate);
     }
 
     private String createFilmName(int idx) {
