@@ -42,7 +42,7 @@ public abstract class BaseUserStorageTest {
     public void testGetByKnownId() {
         for (int idx = 1; idx <= INITIAL_COUNT; idx++) {
             final long id = idx;
-            User expected = testeeHelper.getExpectedUser(id, idx);
+            User expected = testeeHelper.getExpectedUser(idx);
             assertThat(getTestee().get(id))
                     .isPresent()
                     .hasValueSatisfying(found -> assertThat(found)
@@ -65,7 +65,7 @@ public abstract class BaseUserStorageTest {
     public void testGetAll() {
         User[] expected = new User[INITIAL_COUNT];
         for (int idx = 0; idx < INITIAL_COUNT; idx++) {
-            expected[idx] = testeeHelper.getExpectedUser(idx+1, idx+1);
+            expected[idx] = testeeHelper.getExpectedUser(idx+1);
         }
 
         var result = getTestee().getAll();
@@ -76,7 +76,7 @@ public abstract class BaseUserStorageTest {
 
     @Test
     public void testCreate() {
-        var expected = testeeHelper.getExpectedUser(INITIAL_COUNT+1, INITIAL_COUNT+1);
+        var expected = testeeHelper.getExpectedUser(INITIAL_COUNT+1);
         var archetype = expected.toBuilder().id(null).build();
 
         assertThat(getTestee().create(archetype))
@@ -97,7 +97,7 @@ public abstract class BaseUserStorageTest {
 
     @Test
     public void testUpdateByUnknownId() {
-        var from = testeeHelper.getExpectedUser(INITIAL_COUNT+1, INITIAL_COUNT+1);
+        var from = testeeHelper.getExpectedUser(INITIAL_COUNT+1);
 
         assertThat(getTestee().update(from)).isEmpty();
     }
