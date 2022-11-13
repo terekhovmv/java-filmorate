@@ -15,15 +15,28 @@ import static org.assertj.core.api.Assertions.assertThat;
 @RequiredArgsConstructor(onConstructor_ = @Autowired)
 public class DbGenreStorageIntegrationTest {
     private final DbGenreStorage testee;
-    private final Genre[] wellKnownItems = {
+    private static final Genre[] WELL_KNOWN = {
             new Genre((short)1, "Комедия"),
             new Genre((short)3, "Мультфильм"),
             new Genre((short)5, "Приключения")
     };
+    private static final short UNKNOWN_ID = 777;
+
+    @Test
+    public void testContainsByKnownId() {
+        for (var wellKnownItem: WELL_KNOWN) {
+            assertThat(testee.contains(wellKnownItem.getId())).isTrue();
+        }
+    }
+
+    @Test
+    public void testContainsByUnknownId() {
+        assertThat(testee.contains(UNKNOWN_ID)).isFalse();
+    }
 
     @Test
     public void testGetByKnownId() {
-        for (var wellKnownItem: wellKnownItems) {
+        for (var wellKnownItem: WELL_KNOWN) {
             assertThat(testee.get(wellKnownItem.getId()))
                     .isPresent()
                     .hasValueSatisfying(found -> assertThat(found)
@@ -36,7 +49,7 @@ public class DbGenreStorageIntegrationTest {
 
     @Test
     public void testGetByUnknownId() {
-        assertThat(testee.get((short)777)).isEmpty();
+        assertThat(testee.get(UNKNOWN_ID)).isEmpty();
     }
 
     @Test
@@ -44,6 +57,6 @@ public class DbGenreStorageIntegrationTest {
         var result = testee.getAll();
         assertThat(result)
                 .hasSizeGreaterThan(0)
-                .contains(wellKnownItems);
+                .contains(WELL_KNOWN);
     }
 }

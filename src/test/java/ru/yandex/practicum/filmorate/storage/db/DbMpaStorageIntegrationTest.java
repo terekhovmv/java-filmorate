@@ -15,15 +15,28 @@ import static org.assertj.core.api.Assertions.assertThat;
 @RequiredArgsConstructor(onConstructor_ = @Autowired)
 public class DbMpaStorageIntegrationTest {
     private final DbMpaStorage testee;
-    private final Mpa[] wellKnownItems = {
+    private static final Mpa[] WELL_KNOWN = {
             new Mpa((short)1, "G"),
             new Mpa((short)3, "PG-13"),
             new Mpa((short)5, "NC-17")
     };
+    private static final short UNKNOWN_ID = 777;
+
+    @Test
+    public void testContainsByKnownId() {
+        for (var wellKnownItem: WELL_KNOWN) {
+            assertThat(testee.contains(wellKnownItem.getId())).isTrue();
+        }
+    }
+
+    @Test
+    public void testContainsByUnknownId() {
+        assertThat(testee.contains(UNKNOWN_ID)).isFalse();
+    }
 
     @Test
     public void testGetByKnownId() {
-        for (var wellKnownItem: wellKnownItems) {
+        for (var wellKnownItem: WELL_KNOWN) {
             assertThat(testee.get(wellKnownItem.getId()))
                     .isPresent()
                     .hasValueSatisfying(found -> assertThat(found)
@@ -44,6 +57,6 @@ public class DbMpaStorageIntegrationTest {
         var result = testee.getAll();
         assertThat(result)
                 .hasSizeGreaterThan(0)
-                .contains(wellKnownItems);
+                .contains(WELL_KNOWN);
     }
 }
