@@ -7,7 +7,6 @@ import org.springframework.stereotype.Component;
 import ru.yandex.practicum.filmorate.model.Genre;
 import ru.yandex.practicum.filmorate.storage.GenreStorage;
 
-import java.sql.*;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Stream;
@@ -20,7 +19,7 @@ public class DbGenreStorage implements GenreStorage {
 
     public DbGenreStorage(JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
-        rowMapper = new GenreRowMapper();
+        rowMapper = new DbGenreRowMapper();
     }
 
     @Override
@@ -42,15 +41,5 @@ public class DbGenreStorage implements GenreStorage {
                 "SELECT * FROM genres;",
                 this.rowMapper
         ).stream();
-    }
-
-    private static class GenreRowMapper implements RowMapper<Genre> {
-        @Override
-        public Genre mapRow(ResultSet rs, int rowNum) throws SQLException {
-            return Genre.builder()
-                    .id(rs.getShort("id"))
-                    .name(rs.getString("name"))
-                    .build();
-        }
     }
 }

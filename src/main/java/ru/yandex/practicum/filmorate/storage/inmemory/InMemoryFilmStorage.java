@@ -24,9 +24,9 @@ public class InMemoryFilmStorage implements FilmStorage {
 
     public InMemoryFilmStorage(
         InMemoryLikesStorage likesStorage,
-        @Qualifier(DefaultStorageConsts.QUALIFIER)
+        @Qualifier(InMemoryStorageConsts.QUALIFIER)
         MpaStorage mpaStorage,
-        @Qualifier(DefaultStorageConsts.QUALIFIER)
+        @Qualifier(InMemoryStorageConsts.QUALIFIER)
         GenreStorage genreStorage
     ) {
         this.likesStorage = likesStorage;
@@ -72,7 +72,10 @@ public class InMemoryFilmStorage implements FilmStorage {
     public List<Film> getPopular(int count) {
         return storage.values()
                 .stream()
-                .sorted((a,b) -> Integer.compare(likesStorage.getLikesCount(b.getId()), likesStorage.getLikesCount(a.getId())))
+                .sorted((a,b) -> Integer.compare(
+                        likesStorage.getLikesCount(b.getId()),
+                        likesStorage.getLikesCount(a.getId()))
+                )
                 .limit(count)
                 .map(this::addCalculatedData)
                 .collect(Collectors.toList());
@@ -80,8 +83,12 @@ public class InMemoryFilmStorage implements FilmStorage {
 
     private Film addCalculatedData(Film film) {
         return film.toBuilder()
-                .mpa(mpaStorage.getById(film.getMpa().getId()).get())
-                .genres(film.getGenres().stream().map((genreLight)->genreStorage.getById(genreLight.getId()).get()).collect(Collectors.toList()))
+                .mpa(mpaStorage
+                        .getById(film.getMpa().getId())
+                        .orElse(null))
+                .genres(film.getGenres().stream()
+                        .map((genreLight)->genreStorage.getById(genreLight.getId()).orElse(null))
+                        .collect(Collectors.toList()))
                 .rate(likesStorage.getLikesCount(film.getId()))
                 .build();
     }

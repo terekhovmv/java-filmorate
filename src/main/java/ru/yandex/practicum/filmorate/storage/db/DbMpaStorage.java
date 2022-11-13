@@ -16,18 +16,16 @@ import java.util.stream.Stream;
 @Qualifier(DbStorageConsts.QUALIFIER)
 public class DbMpaStorage implements MpaStorage {
     private final JdbcTemplate jdbcTemplate;
-    private final RowMapper<Mpa> rowMapper;
 
     public DbMpaStorage(JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
-        rowMapper = new MpaRowMapper();
     }
 
     @Override
     public Optional<Mpa> getById(short id) {
         List<Mpa> found = jdbcTemplate.query(
                 "SELECT * FROM mpa WHERE id=?;",
-                this.rowMapper,
+                this::buildMpa,
                 id
         );
         if (found.size() == 0) {
@@ -40,17 +38,14 @@ public class DbMpaStorage implements MpaStorage {
     public Stream<Mpa> stream() {
         return jdbcTemplate.query(
                 "SELECT * FROM mpa;",
-                this.rowMapper
+                this::buildMpa
         ).stream();
     }
 
-    private static class MpaRowMapper implements RowMapper<Mpa> {
-        @Override
-        public Mpa mapRow(ResultSet rs, int rowNum) throws SQLException {
-            return Mpa.builder()
-                    .id(rs.getShort("id"))
-                    .name(rs.getString("name"))
-                    .build();
-        }
+    private Mpa buildMpa(ResultSet rs, int rowNum) throws SQLException {
+        return Mpa.builder()
+                .id(rs.getShort("id"))
+                .name(rs.getString("name"))
+                .build();
     }
 }

@@ -16,7 +16,8 @@ public class InMemoryFriendshipStorage implements FriendshipStorage {
     private final Map<Long, Set<Long>> storage = new HashMap<>();
 
     public InMemoryFriendshipStorage(
-            InMemoryUserStorage userStorage
+            @Qualifier(InMemoryStorageConsts.QUALIFIER)
+            UserStorage userStorage
     ) {
         this.userStorage = userStorage;
     }
@@ -62,6 +63,10 @@ public class InMemoryFriendshipStorage implements FriendshipStorage {
     }
 
     private Stream<User> getUsersStream(Collection<Long> ids) {
-        return ids.stream().map((id) -> userStorage.getById(id).get());
+        return ids
+                .stream()
+                .map((id) -> userStorage
+                        .getById(id)
+                        .orElse(null));
     }
 }

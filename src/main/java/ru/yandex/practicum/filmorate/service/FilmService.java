@@ -34,6 +34,7 @@ public class FilmService {
             MpaStorage mpaStorage,
             @Qualifier(DefaultStorageConsts.QUALIFIER)
             GenreStorage genreStorage,
+            @Qualifier(DefaultStorageConsts.QUALIFIER)
             LikesStorage likesStorage
     ) {
         this.filmStorage = filmStorage;

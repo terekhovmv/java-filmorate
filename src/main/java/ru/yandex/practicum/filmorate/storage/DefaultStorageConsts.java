@@ -1,7 +1,7 @@
 package ru.yandex.practicum.filmorate.storage;
 
-import ru.yandex.practicum.filmorate.storage.inmemory.InMemoryStorageConsts;
+import ru.yandex.practicum.filmorate.storage.db.DbStorageConsts;
 
 public interface DefaultStorageConsts {
-    String QUALIFIER = InMemoryStorageConsts.QUALIFIER;
+    String QUALIFIER = DbStorageConsts.QUALIFIER;
 }

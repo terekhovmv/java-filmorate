@@ -24,7 +24,7 @@ public class DbFriendshipStorage implements FriendshipStorage {
     @Override
     public boolean addFriend(long id, long friendId) {
         int rowsAffected = jdbcTemplate.update(
-                "INSERT INTO friendship (user_id, friend_id) VALUES (?, ?);",
+                "MERGE INTO friendship (user_id, friend_id) KEY(user_id, friend_id) VALUES (?, ?);",
                 id,
                 friendId
         );
@@ -44,10 +44,10 @@ public class DbFriendshipStorage implements FriendshipStorage {
     @Override
     public Stream<User> getFriends(long id) {
         final String query =
-                "SELECT users.* " +
-                        "FROM users RIGHT JOIN ( " +
-                        "   SELECT DISTINCT friend_id AS id FROM friendship WHERE user_id=? " +
-                        ") AS found ON users.id=found.id;";
+                "SELECT users.* \n" +
+                "FROM users RIGHT JOIN ( \n" +
+                "   SELECT DISTINCT friend_id AS id FROM friendship WHERE user_id=? \n" +
+                ") AS found ON users.id=found.id;";
 
         return jdbcTemplate.query(
                 query,
@@ -59,12 +59,12 @@ public class DbFriendshipStorage implements FriendshipStorage {
     @Override
     public Stream<User> getCommonFriends(long id, long otherUserId) {
         final String query =
-                "SELECT users.* " +
-                        "FROM users RIGHT JOIN ( " +
-                        "   SELECT DISTINCT friend_id AS id FROM friendship WHERE user_id=? " +
-                        "   INTERSECT " +
-                        "   SELECT DISTINCT friend_id AS id FROM friendship WHERE user_id=? " +
-                        ") AS found ON users.id=found.id;";
+                "SELECT users.* \n" +
+                "FROM users RIGHT JOIN ( \n" +
+                "   SELECT DISTINCT friend_id AS id FROM friendship WHERE user_id=? \n" +
+                "   INTERSECT \n" +
+                "   SELECT DISTINCT friend_id AS id FROM friendship WHERE user_id=? \n" +
+                ") AS found ON users.id=found.id;";
 
         return jdbcTemplate.query(
                 query,
