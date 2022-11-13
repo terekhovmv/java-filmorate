@@ -1,9 +1,10 @@
 package ru.yandex.practicum.filmorate.storage;
 
 import org.junit.jupiter.api.Test;
+import ru.yandex.practicum.filmorate.exceptions.MpaNotFoundException;
 import ru.yandex.practicum.filmorate.model.Mpa;
 
-import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.*;
 
 
 public abstract class BaseMpaStorageTest {
@@ -20,12 +21,17 @@ public abstract class BaseMpaStorageTest {
     public void testContainsByKnownId() {
         for (var wellKnownItem: WELL_KNOWN) {
             assertThat(getTestee().contains(wellKnownItem.getId())).isTrue();
+            assertThatCode(()->getTestee().requireContains(wellKnownItem.getId()))
+                    .doesNotThrowAnyException();
         }
     }
 
     @Test
     public void testContainsByUnknownId() {
         assertThat(getTestee().contains(UNKNOWN_ID)).isFalse();
+        assertThatExceptionOfType(MpaNotFoundException.class)
+                .isThrownBy(() -> getTestee().requireContains(UNKNOWN_ID))
+                .withMessage("Unable to find MPA #%d", UNKNOWN_ID);
     }
 
     @Test
@@ -34,16 +40,18 @@ public abstract class BaseMpaStorageTest {
             assertThat(getTestee().get(wellKnownItem.getId()))
                     .isPresent()
                     .hasValueSatisfying(found -> assertThat(found)
-                            .hasFieldOrPropertyWithValue("id",wellKnownItem.getId())
-                            .hasFieldOrPropertyWithValue("name", wellKnownItem.getName())
-                    );
-
+                            .isEqualTo(wellKnownItem));
+            assertThatCode(()->getTestee().requireContains(wellKnownItem.getId()))
+                    .doesNotThrowAnyException();
         }
     }
 
     @Test
     public void testGetByUnknownId() {
-        assertThat(getTestee().get((short)777)).isEmpty();
+        assertThat(getTestee().get(UNKNOWN_ID)).isEmpty();
+        assertThatExceptionOfType(MpaNotFoundException.class)
+                .isThrownBy(() -> getTestee().require(UNKNOWN_ID))
+                .withMessage("Unable to find MPA #%d", UNKNOWN_ID);
     }
 
     @Test

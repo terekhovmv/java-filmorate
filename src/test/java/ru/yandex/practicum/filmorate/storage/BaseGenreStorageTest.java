@@ -1,9 +1,10 @@
 package ru.yandex.practicum.filmorate.storage;
 
 import org.junit.jupiter.api.Test;
+import ru.yandex.practicum.filmorate.exceptions.GenreNotFoundException;
 import ru.yandex.practicum.filmorate.model.Genre;
 
-import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.*;
 
 public abstract class BaseGenreStorageTest {
     protected abstract GenreStorage getTestee();
@@ -19,12 +20,17 @@ public abstract class BaseGenreStorageTest {
     public void testContainsByKnownId() {
         for (var wellKnownItem : WELL_KNOWN) {
             assertThat(getTestee().contains(wellKnownItem.getId())).isTrue();
+            assertThatCode(()->getTestee().requireContains(wellKnownItem.getId()))
+                    .doesNotThrowAnyException();
         }
     }
 
     @Test
     public void testContainsByUnknownId() {
         assertThat(getTestee().contains(UNKNOWN_ID)).isFalse();
+        assertThatExceptionOfType(GenreNotFoundException.class)
+                .isThrownBy(() -> getTestee().requireContains(UNKNOWN_ID))
+                .withMessage("Unable to find the genre #%d", UNKNOWN_ID);
     }
 
     @Test
@@ -33,17 +39,20 @@ public abstract class BaseGenreStorageTest {
             assertThat(getTestee().get(wellKnownItem.getId()))
                     .isPresent()
                     .hasValueSatisfying(found -> assertThat(found)
-                            .hasFieldOrPropertyWithValue("id", wellKnownItem.getId())
-                            .hasFieldOrPropertyWithValue("name", wellKnownItem.getName())
-                    );
-
+                            .isEqualTo(wellKnownItem));
+            assertThatCode(()->getTestee().requireContains(wellKnownItem.getId()))
+                    .doesNotThrowAnyException();
         }
     }
 
     @Test
     public void testGetByUnknownId() {
         assertThat(getTestee().get(UNKNOWN_ID)).isEmpty();
+        assertThatExceptionOfType(GenreNotFoundException.class)
+                .isThrownBy(() -> getTestee().require(UNKNOWN_ID))
+                .withMessage("Unable to find the genre #%d", UNKNOWN_ID);
     }
+
 
     @Test
     public void testGetAll() {
