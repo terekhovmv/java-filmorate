@@ -26,6 +26,6 @@ public class GenreService {
     }
 
     public List<Genre> getAll() {
-        return storage.stream().collect(Collectors.toList());
+        return storage.getAll();
     }
 }

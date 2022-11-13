@@ -33,7 +33,7 @@ public class UserService {
     }
 
     public List<User> getAll() {
-        return userStorage.stream().collect(Collectors.toList());
+        return userStorage.getAll();
     }
 
     public User create(User archetype) {

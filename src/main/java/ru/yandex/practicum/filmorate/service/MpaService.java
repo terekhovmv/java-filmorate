@@ -8,7 +8,6 @@ import ru.yandex.practicum.filmorate.storage.DefaultStorageConsts;
 import ru.yandex.practicum.filmorate.storage.MpaStorage;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 public class MpaService {
@@ -26,6 +25,6 @@ public class MpaService {
     }
 
     public List<Mpa> getAll() {
-        return storage.stream().collect(Collectors.toList());
+        return storage.getAll();
     }
 }

@@ -5,7 +5,9 @@ import org.springframework.stereotype.Component;
 import ru.yandex.practicum.filmorate.model.Mpa;
 import ru.yandex.practicum.filmorate.storage.MpaStorage;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Optional;
 import java.util.stream.Stream;
 
@@ -29,11 +31,14 @@ public class InMemoryMpaStorage implements MpaStorage {
     }
 
     @Override
-    public Stream<Mpa> stream() {
-        return storage.values().stream();
+    public List<Mpa> getAll() {
+        return new ArrayList<>(storage.values());
     }
 
     private void add(int id, String name) {
-        storage.put((short)id, Mpa.builder().id((short)id).name(name).build());
+        storage.put(
+                (short)id,
+                Mpa.builder().id((short)id).name(name).build()
+        );
     }
 }

@@ -10,7 +10,6 @@ import ru.yandex.practicum.filmorate.storage.MpaStorage;
 import java.sql.*;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Stream;
 
 @Component
 @Qualifier(DbStorageConsts.QUALIFIER)
@@ -35,11 +34,11 @@ public class DbMpaStorage implements MpaStorage {
     }
 
     @Override
-    public Stream<Mpa> stream() {
+    public List<Mpa> getAll() {
         return jdbcTemplate.query(
                 "SELECT * FROM mpa;",
                 this::buildMpa
-        ).stream();
+        );
     }
 
     private Mpa buildMpa(ResultSet rs, int rowNum) throws SQLException {

@@ -16,7 +16,6 @@ import java.sql.*;
 import java.sql.Date;
 import java.util.*;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 @Component
 @Qualifier(DbStorageConsts.QUALIFIER)
@@ -53,14 +52,14 @@ public class DbFilmStorage implements FilmStorage {
     }
 
     @Override
-    public Stream<Film> stream() {
+    public List<Film> getAll() {
         return jdbcTemplate.query(
                 "SELECT f.*, COUNT(l.user_id) AS rate \n" +
                 "FROM films as f \n" +
                 "LEFT JOIN likes AS l ON l.film_id=f.id \n" +
                 "GROUP by f.id;",
                 this::buildFilm
-        ).stream();
+        );
     }
 
     @Override

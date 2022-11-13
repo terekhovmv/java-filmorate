@@ -6,7 +6,9 @@ import org.springframework.stereotype.Component;
 import ru.yandex.practicum.filmorate.model.Genre;
 import ru.yandex.practicum.filmorate.storage.GenreStorage;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Optional;
 import java.util.stream.Stream;
 
@@ -23,7 +25,7 @@ public class InMemoryGenreStorage implements GenreStorage {
         add(3, "Мультфильм");
         add(4, "Боевик");
         add(5, "Приключения");
-        add(6, "Фентези");
+        add(6, "Биография");
     }
 
     @Override
@@ -32,8 +34,8 @@ public class InMemoryGenreStorage implements GenreStorage {
     }
 
     @Override
-    public Stream<Genre> stream() {
-        return storage.values().stream();
+    public List<Genre> getAll() {
+        return new ArrayList<>(storage.values());
     }
 
     private void add(int id, String name) {

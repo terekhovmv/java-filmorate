@@ -9,7 +9,6 @@ import ru.yandex.practicum.filmorate.storage.GenreStorage;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Stream;
 
 @Component
 @Qualifier(DbStorageConsts.QUALIFIER)
@@ -36,10 +35,10 @@ public class DbGenreStorage implements GenreStorage {
     }
 
     @Override
-    public Stream<Genre> stream() {
+    public List<Genre> getAll() {
         return jdbcTemplate.query(
                 "SELECT * FROM genres;",
                 this.rowMapper
-        ).stream();
+        );
     }
 }

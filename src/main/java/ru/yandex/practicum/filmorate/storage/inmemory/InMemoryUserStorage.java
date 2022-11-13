@@ -22,8 +22,8 @@ public class InMemoryUserStorage implements UserStorage {
     }
 
     @Override
-    public Stream<User> stream() {
-        return storage.values().stream();
+    public List<User> getAll() {
+        return new ArrayList<>(storage.values());
     }
 
     @Override

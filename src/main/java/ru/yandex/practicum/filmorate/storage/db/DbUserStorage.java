@@ -13,7 +13,6 @@ import ru.yandex.practicum.filmorate.storage.UserStorage;
 import java.sql.*;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Stream;
 
 @Component
 @Qualifier(DbStorageConsts.QUALIFIER)
@@ -40,11 +39,11 @@ public class DbUserStorage implements UserStorage {
     }
 
     @Override
-    public Stream<User> stream() {
+    public List<User> getAll() {
         return jdbcTemplate.query(
                 "SELECT * FROM users;",
                 this.rowMapper
-        ).stream();
+        );
     }
 
     @Override

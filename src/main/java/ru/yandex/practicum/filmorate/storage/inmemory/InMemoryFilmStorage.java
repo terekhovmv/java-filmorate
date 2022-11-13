@@ -44,8 +44,24 @@ public class InMemoryFilmStorage implements FilmStorage {
     }
 
     @Override
-    public Stream<Film> stream() {
-        return storage.values().stream().map(this::addCalculatedData);
+    public List<Film> getAll() {
+        return storage.values()
+                .stream()
+                .map(this::addCalculatedData)
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<Film> getPopular(int count) {
+        return storage.values()
+                .stream()
+                .sorted((a,b) -> Integer.compare(
+                        likesStorage.getLikesCount(b.getId()),
+                        likesStorage.getLikesCount(a.getId()))
+                )
+                .limit(count)
+                .map(this::addCalculatedData)
+                .collect(Collectors.toList());
     }
 
     @Override
@@ -66,19 +82,6 @@ public class InMemoryFilmStorage implements FilmStorage {
 
         storage.put(id, from);
         return Optional.of(addCalculatedData(from));
-    }
-
-    @Override
-    public List<Film> getPopular(int count) {
-        return storage.values()
-                .stream()
-                .sorted((a,b) -> Integer.compare(
-                        likesStorage.getLikesCount(b.getId()),
-                        likesStorage.getLikesCount(a.getId()))
-                )
-                .limit(count)
-                .map(this::addCalculatedData)
-                .collect(Collectors.toList());
     }
 
     private Film addCalculatedData(Film film) {

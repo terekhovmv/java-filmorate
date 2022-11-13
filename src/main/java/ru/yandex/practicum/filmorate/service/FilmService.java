@@ -14,7 +14,6 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -49,7 +48,7 @@ public class FilmService {
     }
 
     public List<Film> getAll() {
-        return filmStorage.stream().collect(Collectors.toList());
+        return filmStorage.getAll();
     }
 
     public Film create(Film archetype) {
