@@ -104,7 +104,7 @@ public class InMemoryFilmStorage implements FilmStorage {
                         .get(film.getMpa().getId())
                         .orElse(null))
                 .genres(film.getGenres().stream()
-                        .map((genreLight)->genreStorage.get(genreLight.getId()).orElse(null))
+                        .map(genreLight -> genreStorage.get(genreLight.getId()).orElse(null))
                         .collect(Collectors.toList()))
                 .rate(likesStorage.getLikesCount(film.getId()))
                 .build();

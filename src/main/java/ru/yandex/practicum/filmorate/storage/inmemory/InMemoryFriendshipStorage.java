@@ -74,7 +74,7 @@ public class InMemoryFriendshipStorage implements FriendshipStorage {
     private List<User> getUsers(Collection<Long> ids) {
         return ids
                 .stream()
-                .map((id) -> userStorage
+                .map(id -> userStorage
                         .get(id)
                         .orElse(null))
                 .filter(Objects::nonNull)
