@@ -47,13 +47,13 @@ public class DbLikesStorage implements LikesStorage {
         );
     }
 
+    @SuppressWarnings("ConstantConditions")
     @Override
     public int getLikesCount(int filmId) {
-        Integer count = jdbcTemplate.queryForObject(
+        return jdbcTemplate.queryForObject(
                 "SELECT COUNT(*) FROM likes WHERE film_id=?;",
                 Integer.class,
                 filmId
         );
-        return (count != null) ? count : 0;
     }
 }
