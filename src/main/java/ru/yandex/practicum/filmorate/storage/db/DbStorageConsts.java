@@ -1,5 +1,5 @@
 package ru.yandex.practicum.filmorate.storage.db;
 
-public interface DbStorageConsts {
-    String QUALIFIER = "db";
+public final class DbStorageConsts {
+    public static final String QUALIFIER = "db";
 }

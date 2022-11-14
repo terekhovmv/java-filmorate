@@ -1,5 +1,5 @@
 package ru.yandex.practicum.filmorate.storage.inmemory;
 
-public interface InMemoryStorageConsts {
-    String QUALIFIER = "in-memory";
+public final class InMemoryStorageConsts {
+    public static final String QUALIFIER = "in-memory";
 }
