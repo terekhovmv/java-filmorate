@@ -105,6 +105,7 @@ public class InMemoryFilmStorage implements FilmStorage {
                         .orElse(null))
                 .genres(film.getGenres().stream()
                         .map(genreLight -> genreStorage.get(genreLight.getId()).orElse(null))
+                        .filter(Objects::nonNull)
                         .collect(Collectors.toList()))
                 .rate(likesStorage.getLikesCount(film.getId()))
                 .build();
