@@ -56,7 +56,7 @@ public abstract class BaseLikesStorageTest {
 
         final int amelie = 1;
 
-        assertThat(testee.getLikesCount(amelie)).isEqualTo(0);
+        assertThat(testee.getLikesCount(amelie)).isZero();
     }
 
     @Test
