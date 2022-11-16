@@ -6,7 +6,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 public abstract class BaseFriendshipStorageTest {
     private UserStorageTestHelper userStorageHelper;
-    private static final int INITIAL_USER_COUNT = 10;
+    private static final int INITIAL_USER_COUNT = 5;
 
     protected abstract UserStorage getUserStorage();
     protected abstract FriendshipStorage getTestee();

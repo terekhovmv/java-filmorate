@@ -8,7 +8,7 @@ import static org.assertj.core.api.Assertions.*;
 
 public abstract class BaseUserStorageTest {
     private UserStorageTestHelper testeeHelper;
-    private static final int INITIAL_COUNT = 10;
+    private static final int INITIAL_COUNT = 5;
 
     protected abstract UserStorage getTestee();
 

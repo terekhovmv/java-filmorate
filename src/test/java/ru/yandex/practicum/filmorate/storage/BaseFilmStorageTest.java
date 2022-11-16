@@ -10,8 +10,8 @@ import static org.assertj.core.api.Assertions.*;
 
 public abstract class BaseFilmStorageTest {
     private FilmStorageTestHelper testeeHelper;
-    private static final int INITIAL_FILM_COUNT = 10;
-    private static final int INITIAL_USER_COUNT = 10;
+    private static final int INITIAL_FILM_COUNT = 5;
+    private static final int INITIAL_USER_COUNT = 5;
 
     protected abstract FilmStorage getTestee();
 

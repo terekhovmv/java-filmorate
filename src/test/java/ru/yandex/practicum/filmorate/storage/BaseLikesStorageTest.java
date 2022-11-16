@@ -5,8 +5,8 @@ import org.junit.jupiter.api.Test;
 import static org.assertj.core.api.Assertions.assertThat;
 
 public abstract class BaseLikesStorageTest {
-    private static final int INITIAL_FILM_COUNT = 10;
-    private static final int INITIAL_USER_COUNT = 10;
+    private static final int INITIAL_FILM_COUNT = 5;
+    private static final int INITIAL_USER_COUNT = 5;
 
     protected abstract FilmStorage getFilmStorage();
     protected abstract UserStorage getUserStorage();
